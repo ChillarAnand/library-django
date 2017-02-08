@@ -1,0 +1,7 @@
+from django.db import models
+
+
+class Author:
+    name = models.Char
+
+class Book:
