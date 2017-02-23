@@ -1,2 +1,3 @@
 /library/settings/production.py
 /settings/production.py
+db.sqlite3
