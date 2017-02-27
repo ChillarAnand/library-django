@@ -1,16 +1,21 @@
-"""
-WSGI config for library project.
-
-It exposes the WSGI callable as a module-level variable named ``application``.
-
-For more information on this file, see
-https://docs.djangoproject.com/en/1.10/howto/deployment/wsgi/
-"""
-
 import os
 
-from django.core.wsgi import get_wsgi_application
+import django
+from django.core.handlers import wsgi
+from django.views import debug
+
+
+class StaffDebugWSGIHandler(wsgi.WSGIHandler):
+
+    def handle_uncaught_exception(self, request, resolver, exc_info):
+        if hasattr(request, 'user') and request.user.is_staff:
+            return debug.technical_500_response(request, *exc_info)
+
+        return super().handle_uncaught_exception(request, resolver, exc_info)
+
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "library.settings")
 
-application = get_wsgi_application()
+django.setup(set_prefix=False)
+
+application = StaffDebugWSGIHandler()

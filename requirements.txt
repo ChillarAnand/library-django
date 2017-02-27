@@ -1,2 +1,5 @@
 Django==1.10.4
 django-extensions==1.7.5
+
+# chat
+channels==1.0.3
