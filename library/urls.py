@@ -16,6 +16,13 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 
+from video.views import video
+from video import views
+
+
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+    url(r'^video/play', views.play, name='play'),
+    url(r'^video/(?P<path>[\w-]+)', video, name='video'),
+
 ]
