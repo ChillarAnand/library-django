@@ -19,6 +19,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'oauth2_provider',
+
     'book',
 ]
 
@@ -87,3 +89,29 @@ USE_TZ = True
 
 
 STATIC_URL = '/static/'
+
+
+from celery import Celery
+broker = 'memory://'
+broker = 'amqp://guest:guest@localhost//'
+
+app = Celery(broker=broker)
+
+app.conf.update({
+    'CELERYD_LOG_COLOR': False,
+})
+
+
+@app.task
+def add(x, y):
+    return x + y
+
+
+@app.task
+def dummy():
+    pass
+
+
+@app.on_after_configure.connect
+def setup_periodic_tasks(sender, **kwargs):
+    sender.add_periodic_task(10, my_task.s(66))

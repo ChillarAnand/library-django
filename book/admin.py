@@ -1,14 +1,16 @@
 from django.contrib import admin
-from django.core.urlresolvers import reverse
+# from django.core.urlresolvers import reverse
+from django.urls import reverse
 
 from .models import Author, Book
 
 
 class BookAdmin(admin.ModelAdmin):
     list_display = ('name', 'author', 'delete', )
-    list_display = ('name', 'author_link', )
+
     list_display = ('name', 'author_link', 'name', 'name')
     list_display = ('name', 'author', 'name', 'name')
+    list_display = ('name', 'author', 'borrowed')
 
     list_display_links = ('name', 'author',)
 
