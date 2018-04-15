@@ -115,3 +115,15 @@ def dummy():
 @app.on_after_configure.connect
 def setup_periodic_tasks(sender, **kwargs):
     sender.add_periodic_task(10, my_task.s(66))
+
+
+ASGI_APPLICATION = "library.routing.application"
+# ASGI_APPLICATION = "chat.routing.application"
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],
+        },
+    },
+}
