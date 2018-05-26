@@ -14,3 +14,7 @@ service_identity
 gunicorn
 boto3
 ansible
+django-pdb
+Werkzeug
+django-debug-toolbar
+django-querycount
