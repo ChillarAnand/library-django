@@ -1,0 +1,18 @@
+[Unit]
+Description=gunicorn daemon
+After=network.target
+
+
+[Service]
+PIDFile=/run/gunicorn/pid
+WorkingDirectory={{ project_root }}
+Environment="DJANGO_SETTINGS_MODULE={{settings}}"
+ExecStart={{ local_bin }}/gunicorn --bind 0.0.0.0:8000 --log-level debug --log-file=- {{ project_name }}.wsgi --workers 4
+ExecReload=/bin/kill -s HUP $MAINPID
+ExecStop=/bin/kill -s TERM $MAINPID
+Restart=on-abort
+PrivateTmp=true
+
+
+[Install]
+WantedBy=multi-user.target
