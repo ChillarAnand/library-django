@@ -19,9 +19,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'oauth2_provider',
+    # 'oauth2_provider',
+    'channels',
 
     'book',
+    'crm',
+    'chat',
 ]
 
 MIDDLEWARE = [
@@ -118,7 +121,7 @@ def setup_periodic_tasks(sender, **kwargs):
 
 
 ASGI_APPLICATION = "library.routing.application"
-# ASGI_APPLICATION = "chat.routing.application"
+
 CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
