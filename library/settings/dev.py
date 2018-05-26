@@ -23,7 +23,7 @@ MIDDLEWARE_CLASSES = (
 
 DEV_MIDDLEWARE = [
     'debug_toolbar.middleware.DebugToolbarMiddleware',
-    'querycount.middleware.QueryCountMiddleware',
+    # 'querycount.middleware.QueryCountMiddleware',
     'django_pdb.middleware.PdbMiddleware',
 ]
 
@@ -43,4 +43,38 @@ QUERYCOUNT = {
     'IGNORE_SQL_PATTERNS': [],
     'DISPLAY_DUPLICATES': 1,
     'RESPONSE_HEADER': 'X-DjangoQueryCount-Count'
+}
+
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'filters': {
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse'
+        }
+    },
+    'handlers': {
+        'mail_admins': {
+            'level': 'ERROR',
+            'filters': ['require_debug_false'],
+            'class': 'django.utils.log.AdminEmailHandler'
+        },
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+        },
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': 'debug.log',
+        },
+
+    },
+    'loggers': {
+        'django.db.backends': {
+            'level': 'DEBUG',
+            # 'handlers': ['console', ],
+        },
+    }
 }
