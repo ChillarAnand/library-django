@@ -1,8 +1,7 @@
-# chat/consumers.py
-from channels.generic.websocket import WebsocketConsumer
 import json
-from asgiref.sync import async_to_sync
 
+from asgiref.sync import async_to_sync
+from channels.generic.websocket import WebsocketConsumer, SyncConsumer
 
 
 class ChatConsumer(WebsocketConsumer):
@@ -47,3 +46,8 @@ class ChatConsumer(WebsocketConsumer):
         self.send(text_data=json.dumps({
             'message': message
         }))
+
+
+class EmailBook(SyncConsumer):
+    def send_email(self, message):
+        print(message)

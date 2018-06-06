@@ -17,6 +17,7 @@ urlpatterns = [
     # url(r'^o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
     url(r'^test/$', bviews.test, name='test', ),
 
+    url(r'^email-book/$', bviews.email_book, name='email-book', ),
     url(r'^$', bviews.hello, name='hello', ),
 ]
 
