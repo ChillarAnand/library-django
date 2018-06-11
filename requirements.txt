@@ -5,9 +5,10 @@ celery
 
 
 # channels
-channels_redis
-channels
-service_identity
+channels==2.1.1
+channels-redis==2.1.1
+service-identity==17.0.0
+
 
 
 # deployment
