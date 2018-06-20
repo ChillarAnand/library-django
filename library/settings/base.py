@@ -131,3 +131,6 @@ CHANNEL_LAYERS = {
         },
     },
 }
+
+
+TEST = True
