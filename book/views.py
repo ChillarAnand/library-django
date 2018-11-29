@@ -10,6 +10,10 @@ def test(request):
     return HttpResponse({'test passed'})
 
 
+def error(request):
+    return someerror
+
+
 def hello(request):
     from celery import Celery
     celery = Celery()

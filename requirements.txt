@@ -10,12 +10,13 @@ channels-redis==2.1.1
 service-identity==17.0.0
 
 
-
-# deployment
+# development
 gunicorn
 boto3
-ansible
 django-pdb
 Werkzeug
 django-debug-toolbar
 django-querycount
+
+# monitoring
+airbrake==2.1.0

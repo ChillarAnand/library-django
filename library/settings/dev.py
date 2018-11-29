@@ -1,3 +1,7 @@
+import os
+
+import airbrake
+
 from .base import *
 
 
@@ -6,6 +10,7 @@ SECRET_KEY = 'q6emagfzaeftr*4$o@@608v3!)(^cmvwm@2kcatu7if(c#0w+@'
 DEBUG = True
 
 ALLOWED_HOSTS = ['0.0.0.0', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['*']
 
 
 DEVELOPMENT_APPS = (
@@ -78,3 +83,13 @@ LOGGING = {
         },
     }
 }
+
+AIRBRAKE_API_KEY = os.environ.get('AIRBRAKE_API_KEY')
+
+
+logger = airbrake.getLogger(api_key=AIRBRAKE_API_KEY, project_id=205620)
+
+try:
+    1/0
+except Exception:
+    logger.exception("Bad math.")
