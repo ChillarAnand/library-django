@@ -1,1 +1,1 @@
-web: gunicorn library.wsgi --log-file -
+web: gunicorn library.wsgi --bind 0.0.0.0:$PORT --log-file -
