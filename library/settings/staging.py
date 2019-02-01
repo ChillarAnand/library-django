@@ -4,8 +4,10 @@ import airbrake
 
 from .base import *
 
+_env = os.env.get
 
-SECRET_KEY = 'q6emagfzaeftr*4$o@@608v3!)(^cmvwm@2kcatu7if(c#0w+@'
+SECRET_KEY = _env('SECRET_KEY')
+
 
 DEBUG = False
 

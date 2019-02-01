@@ -1,6 +1,7 @@
 import os
 
 import airbrake
+import dj_database_url
 
 from .base import *
 
@@ -16,6 +17,7 @@ ALLOWED_HOSTS = ['*']
 DEVELOPMENT_APPS = (
     'django_extensions',
     'debug_toolbar',
+    'silk',
 )
 
 INSTALLED_APPS += DEVELOPMENT_APPS
@@ -29,7 +31,8 @@ MIDDLEWARE_CLASSES = (
 DEV_MIDDLEWARE = [
     'debug_toolbar.middleware.DebugToolbarMiddleware',
     # 'querycount.middleware.QueryCountMiddleware',
-    'django_pdb.middleware.PdbMiddleware',
+    # 'django_pdb.middleware.PdbMiddleware',
+    'silk.middleware.SilkyMiddleware',
 ]
 
 MIDDLEWARE = DEV_MIDDLEWARE + MIDDLEWARE
@@ -89,7 +92,17 @@ AIRBRAKE_API_KEY = os.environ.get('AIRBRAKE_API_KEY')
 
 logger = airbrake.getLogger(api_key=AIRBRAKE_API_KEY, project_id=205620)
 
-try:
-    1/0
-except Exception:
-    logger.exception("Bad math.")
+# try:
+#     1/0
+# except Exception:
+#     logger.exception("Bad math.")
+
+
+POSTGRES_URI = env('POSTGRES_URI')
+
+DATABASES = {
+    'default': dj_database_url.config(
+        default=POSTGRES_URI,
+        conn_max_age=int(os.getenv('POSTGRES_CONN_MAX_AGE', 600))
+    )
+}

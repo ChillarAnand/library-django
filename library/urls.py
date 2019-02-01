@@ -19,7 +19,7 @@ urlpatterns = [
     url(r'^error', bviews.error, name='error', ),
 
     url(r'^email-book/$', bviews.email_book, name='email-book', ),
-    url(r'^$', bviews.hello, name='hello', ),
+    url(r'^$', bviews.home, name='hello', ),
 ]
 
 
@@ -28,3 +28,4 @@ if settings.DEBUG:
     urlpatterns = [
         url(r'^__debug__/', include(debug_toolbar.urls)),
     ] + urlpatterns
+    urlpatterns += [url(r'^silk/', include('silk.urls', namespace='silk'))]
