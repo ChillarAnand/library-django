@@ -20,7 +20,7 @@ DEVELOPMENT_APPS = (
     'silk',
 )
 
-INSTALLED_APPS += DEVELOPMENT_APPS
+# INSTALLED_APPS += DEVELOPMENT_APPS
 
 
 MIDDLEWARE_CLASSES = (
@@ -32,10 +32,10 @@ DEV_MIDDLEWARE = [
     'debug_toolbar.middleware.DebugToolbarMiddleware',
     # 'querycount.middleware.QueryCountMiddleware',
     # 'django_pdb.middleware.PdbMiddleware',
-    'silk.middleware.SilkyMiddleware',
+    # 'silk.middleware.SilkyMiddleware',
 ]
 
-MIDDLEWARE = DEV_MIDDLEWARE + MIDDLEWARE
+# MIDDLEWARE = DEV_MIDDLEWARE + MIDDLEWARE
 
 INTERNAL_IPS = ALLOWED_HOSTS
 
@@ -87,10 +87,13 @@ LOGGING = {
     }
 }
 
-AIRBRAKE_API_KEY = os.environ.get('AIRBRAKE_API_KEY')
+LOGGING = {}
 
-
-logger = airbrake.getLogger(api_key=AIRBRAKE_API_KEY, project_id=205620)
+try:
+    AIRBRAKE_API_KEY = os.environ.get('AIRBRAKE_API_KEY')
+    logger = airbrake.getLogger(api_key=AIRBRAKE_API_KEY, project_id=205620)
+except:
+    pass
 
 # try:
 #     1/0
@@ -98,11 +101,11 @@ logger = airbrake.getLogger(api_key=AIRBRAKE_API_KEY, project_id=205620)
 #     logger.exception("Bad math.")
 
 
-POSTGRES_URI = env('POSTGRES_URI')
-
 DATABASES = {
     'default': dj_database_url.config(
-        default=POSTGRES_URI,
+        default='postgres://f:f@localhost/library',
         conn_max_age=int(os.getenv('POSTGRES_CONN_MAX_AGE', 600))
     )
 }
+
+print('dev')

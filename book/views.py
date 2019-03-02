@@ -3,7 +3,6 @@ from channels.layers import get_channel_layer
 from django.db import connection
 from django.http import HttpResponse
 
-from silk.models import Request
 
 
 channel_layer = get_channel_layer()
@@ -38,6 +37,7 @@ def email_book(request):
 
 
 def home(request):
+    from silk.models import Request
     data = Request.objects.all()
     query = '''
     SELECT s.*,

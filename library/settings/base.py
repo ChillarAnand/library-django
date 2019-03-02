@@ -23,11 +23,13 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     # 'oauth2_provider',
-    'channels',
+    # 'channels',
 
     'book',
     'crm',
-    'chat',
+    # 'chat',
+    # 'rest_framework',
+    'drf_generators',
 ]
 
 
@@ -110,6 +112,7 @@ app.conf.update({
 })
 
 
+
 @app.task
 def add(x, y):
     return x + y
@@ -120,9 +123,9 @@ def dummy():
     pass
 
 
-@app.on_after_configure.connect
-def setup_periodic_tasks(sender, **kwargs):
-    sender.add_periodic_task(10, my_task.s(66))
+# @app.on_after_configure.connect
+# def setup_periodic_tasks(sender, **kwargs):
+#     sender.add_periodic_task(10, my_task.s(66))
 
 
 ASGI_APPLICATION = "library.routing.application"

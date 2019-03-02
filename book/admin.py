@@ -1,6 +1,8 @@
 from django.contrib import admin
-# from django.core.urlresolvers import reverse
-from django.urls import reverse
+try:
+    from django.urls import reverse
+except ImportError:
+    from django.core.urlresolvers import reverse
 
 from .models import Author, Book
 
@@ -20,6 +22,8 @@ class BookAdmin(admin.ModelAdmin):
     author_link.allow_tags = True
     author_link.short_description = 'Author'
 
+    autocomplete_fields = ['author']
+
     def delete(self, book):
         link = reverse("admin:book_book_delete", args=[book.pk])
         button = '<input type="button" onclick="location.href=\'{}\'" value="Delete" />'
@@ -28,5 +32,9 @@ class BookAdmin(admin.ModelAdmin):
     delete.short_description = 'Delete book'
 
 
-admin.site.register(Author)
+class AuthorAdmin(admin.ModelAdmin):
+    search_fields = ('name',)
+
+
+admin.site.register(Author, AuthorAdmin)
 admin.site.register(Book, BookAdmin)
