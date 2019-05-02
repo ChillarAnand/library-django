@@ -27,9 +27,10 @@ INSTALLED_APPS = [
 
     'book',
     'crm',
-    # 'chat',
+    'chat',
     # 'rest_framework',
     'drf_generators',
+    'django_extensions',
 ]
 
 

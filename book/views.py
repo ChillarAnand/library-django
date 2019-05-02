@@ -1,64 +1,99 @@
-from asgiref.sync import async_to_sync
-from channels.layers import get_channel_layer
-from django.db import connection
-from django.http import HttpResponse
+from django.shortcuts import get_object_or_404
+from rest_framework.response import Response
+from rest_framework.viewsets import ViewSet
+
+from book.models import Author
+from book.models import Book
+from book.serializers import AuthorSerializer
+from book.serializers import BookSerializer
+
+print(__file__)
 
 
+class AuthorViewSet(ViewSet):
 
-channel_layer = get_channel_layer()
+    def list(self, request):
+        queryset = Author.objects.all()
+        serializer = AuthorSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def create(self, request):
+        serializer = AuthorSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=201)
+        return Response(serializer.errors, status=400)
+
+    def retrieve(self, request, pk=None):
+        queryset = Author.objects.all()
+        item = get_object_or_404(queryset, pk=pk)
+        serializer = AuthorSerializer(item)
+        return Response(serializer.data)
+
+    def update(self, request, pk=None):
+        try:
+            item = Author.objects.get(pk=pk)
+        except Author.DoesNotExist:
+            return Response(status=404)
+        serializer = AuthorSerializer(item, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=400)
+
+    def destroy(self, request, pk=None):
+        try:
+            item = Author.objects.get(pk=pk)
+        except Author.DoesNotExist:
+            return Response(status=404)
+        item.delete()
+        return Response(status=204)
+
+
+class BookViewSet(ViewSet):
+
+    def list(self, request):
+        queryset = Book.objects.all()
+        serializer = BookSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def create(self, request):
+        serializer = BookSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=201)
+        return Response(serializer.errors, status=400)
+
+    def retrieve(self, request, pk=None):
+        queryset = Book.objects.all()
+        item = get_object_or_404(queryset, pk=pk)
+        serializer = BookSerializer(item)
+        return Response(serializer.data)
+
+    def update(self, request, pk=None):
+        try:
+            item = Book.objects.get(pk=pk)
+        except Book.DoesNotExist:
+            return Response(status=404)
+        serializer = BookSerializer(item, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=400)
+
+    def destroy(self, request, pk=None):
+        try:
+            item = Book.objects.get(pk=pk)
+        except Book.DoesNotExist:
+            return Response(status=404)
+        item.delete()
+        return Response(status=204)
 
 
 def test(request):
-    return HttpResponse({'test passed'})
+    pass
 
 
-def error(request):
-    return someerror
-
-
-def hello(request):
-    from celery import Celery
-    celery = Celery()
-    celery.config_from_object('library.settings.base')
-    celery.send_task('library.settings.base.add', (2, 2))
-    return HttpResponse({'hello'})
-
-
-def email_book(request):
-    async_to_sync(channel_layer.send)(
-        "email-book",
-        {
-            'type': 'send-email',
-            'id': 12,
-            'message': 'message',
-        }
-    )
-    return HttpResponse({'book emailed'})
-
-
-def home(request):
-    from silk.models import Request
-    data = Request.objects.all()
-    query = '''
-    SELECT s.*,
-       (s.atime * s.cpath) as ifactor
-  FROM (
-        select path,
-               avg(time_taken) as atime,
-               count(path) as cpath
-          from silk_request
-         group by PATH
-       ) s
- ORDER BY ifactor DESC;
-'''
-    cursor = connection.cursor()
-    cursor.execute(query)
-    data = cursor.fetchall()
-
-    column_width=20
-    for row in data:
-        for el in row:
-            print(str(el).ljust(column_width), sep='')
-        print
-
-    return HttpResponse({'home'})
+error = test
+email_book = test
+home = test

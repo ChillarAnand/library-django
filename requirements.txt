@@ -21,3 +21,6 @@ django-querycount
 # monitoring
 airbrake==2.1.0
 django-silk==3.0.1
+dj_database_url
+drf_generators
+djangorestframework

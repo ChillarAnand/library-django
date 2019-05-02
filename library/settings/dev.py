@@ -1,10 +1,8 @@
-import os
-
 import airbrake
 import dj_database_url
+import os
 
 from .base import *
-
 
 SECRET_KEY = 'q6emagfzaeftr*4$o@@608v3!)(^cmvwm@2kcatu7if(c#0w+@'
 
@@ -108,4 +106,13 @@ DATABASES = {
     )
 }
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': 'library.db',
+#         # 'NAME': '/Users/curatech/projects/library/library',
+#     }
+# }
+
 print('dev')
+print(DATABASES["default"]["NAME"])

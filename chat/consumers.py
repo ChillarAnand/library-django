@@ -1,13 +1,13 @@
-import sys
 import json
-
-from django.conf import settings
+import sys
 from asgiref.sync import async_to_sync
+from channels.generic.websocket import SyncConsumer
+from channels.generic.websocket import WebsocketConsumer
 from channels.layers import get_channel_layer
-from channels.generic.websocket import WebsocketConsumer, SyncConsumer
-
+from django.conf import settings
 
 channel_layer = get_channel_layer()
+print(__file__)
 
 
 class ChatConsumer(WebsocketConsumer):
