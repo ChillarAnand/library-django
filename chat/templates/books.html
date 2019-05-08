@@ -1,0 +1,27 @@
+<html>
+
+<body>
+
+<div class="custom-container">
+    <div class="row">
+        <div class="col-sm-12">
+            <h2>New Book</h2>
+            <hr>
+            <div class="form-container space-2-bottom">
+                <form method="POST" action="."> {% csrf_token %}
+                    {{ form }}
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary">
+                            Submit
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+
+</html>
+

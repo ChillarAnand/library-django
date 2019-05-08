@@ -20,7 +20,8 @@ urlpatterns = [
     url(r'^error', bviews.error, name='error', ),
 
     url(r'^email-book/$', bviews.email_book, name='email-book', ),
-    url(r'^$', bviews.home, name='hello', ),
+    url(r'^bf/$', bviews.book_form, name='bf', ),
+    url(r'^hello$', bviews.hello, name='hello', ),
 ]
 
 

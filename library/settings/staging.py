@@ -4,7 +4,7 @@ import airbrake
 
 from .base import *
 
-_env = os.env.get
+_env = os.environ.get
 
 SECRET_KEY = _env('SECRET_KEY')
 

@@ -1,4 +1,9 @@
+from django import forms
+from django.http import JsonResponse
+from django.http.response import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
+from django.shortcuts import render
+from django.urls import reverse
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
 
@@ -91,9 +96,34 @@ class BookViewSet(ViewSet):
 
 
 def test(request):
-    pass
+    return Response()
 
 
 error = test
 email_book = test
 home = test
+
+
+def hello(request):
+    return JsonResponse({'data': 'hello'})
+
+
+class BookForm(forms.Form):
+    name = forms.CharField()
+
+
+def book_form(request):
+    template = 'books.html'
+
+    if request.method == 'GET':
+        form = BookForm()
+        context = {'form': form}
+        return render(request, template, context)
+
+    # POST Workflow
+    form = BookForm(data=request.POST)
+    if not form.is_valid():
+        return render(request, template, context)
+
+    # book = Book.objects.create()
+    return HttpResponseRedirect(reverse('hello'))
