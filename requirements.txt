@@ -24,3 +24,4 @@ django-silk==3.0.1
 dj_database_url
 drf_generators
 djangorestframework
+django-speedinfo==1.4.0

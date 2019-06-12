@@ -2,6 +2,7 @@ from django.conf import settings
 from django.conf.urls import include
 from django.conf.urls import url
 from django.contrib import admin
+from django.views import generic
 
 from book import views as bviews
 
@@ -11,6 +12,7 @@ admin.site.index_title = "Welcome to library admin portal"
 
 
 urlpatterns = [
+    url(r'^$', generic.RedirectView.as_view(url='/admin/', permanent=True), name='index'),
     url(r'^admin/', admin.site.urls),
     url(r'^chat/', include('chat.urls')),
     url(r'^book/', include('book.urls')),
@@ -24,10 +26,10 @@ urlpatterns = [
     url(r'^hello$', bviews.hello, name='hello', ),
 ]
 
+if settings.DEBUG:
+    import debug_toolbar
 
-# if settings.DEBUG:
-#     import debug_toolbar
-#     urlpatterns = [
-#         url(r'^__debug__/', include(debug_toolbar.urls)),
-#     ] + urlpatterns
-#     urlpatterns += [url(r'^silk/', include('silk.urls', namespace='silk'))]
+    # urlpatterns = [
+    #                   url(r'^__debug__/', include(debug_toolbar.urls)),
+    #               ] + urlpatterns
+    # urlpatterns += [url(r'^silk/', include('silk.urls', namespace='silk'))]

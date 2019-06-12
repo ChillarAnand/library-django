@@ -81,6 +81,11 @@ models = apps.get_models()
 
 for model in models:
     try:
-        admin.site.register(model)
+        print(model)
+        # admin.site.register(model)
     except:
         pass
+
+from speedinfo.models import ViewProfiler
+
+admin.site.unregister(ViewProfiler)

@@ -13,12 +13,12 @@ ALLOWED_HOSTS = ['*']
 
 
 DEVELOPMENT_APPS = (
-    'django_extensions',
     'debug_toolbar',
-    'silk',
+    # 'silk',
+    'speedinfo',
 )
 
-# INSTALLED_APPS += DEVELOPMENT_APPS
+INSTALLED_APPS += DEVELOPMENT_APPS
 
 
 MIDDLEWARE_CLASSES = (
@@ -28,9 +28,11 @@ MIDDLEWARE_CLASSES = (
 
 DEV_MIDDLEWARE = [
     'debug_toolbar.middleware.DebugToolbarMiddleware',
+    # 'silk.middleware.SilkyMiddleware',
+    'speedinfo.middleware.ProfilerMiddleware',
+    'django.middleware.cache.FetchFromCacheMiddleware',
     # 'querycount.middleware.QueryCountMiddleware',
     # 'django_pdb.middleware.PdbMiddleware',
-    # 'silk.middleware.SilkyMiddleware',
 ]
 
 # MIDDLEWARE = DEV_MIDDLEWARE + MIDDLEWARE
@@ -113,6 +115,14 @@ DATABASES = {
 #         # 'NAME': '/Users/curatech/projects/library/library',
 #     }
 # }
+
+CACHES = {
+    'default': {
+        'BACKEND': 'speedinfo.backends.proxy_cache',
+        'CACHE_BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+        'LOCATION': '/var/tmp/django_cache',
+    }
+}
 
 print('dev')
 print(DATABASES["default"]["NAME"])

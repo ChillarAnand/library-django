@@ -21,6 +21,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
 
     # 'oauth2_provider',
     # 'channels',
@@ -32,6 +33,8 @@ INSTALLED_APPS = [
     'drf_generators',
     'django_extensions',
 ]
+
+SITE_ID = 1
 
 
 MIDDLEWARE = [
