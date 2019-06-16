@@ -14,7 +14,7 @@ ALLOWED_HOSTS = ['*']
 
 DEVELOPMENT_APPS = (
     'debug_toolbar',
-    # 'silk',
+    'silk',
     'speedinfo',
 )
 
@@ -28,14 +28,14 @@ MIDDLEWARE_CLASSES = (
 
 DEV_MIDDLEWARE = [
     'debug_toolbar.middleware.DebugToolbarMiddleware',
-    # 'silk.middleware.SilkyMiddleware',
+    'silk.middleware.SilkyMiddleware',
     'speedinfo.middleware.ProfilerMiddleware',
     'django.middleware.cache.FetchFromCacheMiddleware',
     # 'querycount.middleware.QueryCountMiddleware',
     # 'django_pdb.middleware.PdbMiddleware',
 ]
 
-# MIDDLEWARE = DEV_MIDDLEWARE + MIDDLEWARE
+MIDDLEWARE = DEV_MIDDLEWARE + MIDDLEWARE
 
 INTERNAL_IPS = ALLOWED_HOSTS
 
