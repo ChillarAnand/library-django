@@ -7,7 +7,7 @@ try:
 except ImportError:
     from django.core.urlresolvers import reverse
 
-from .models import Author, Book
+from .models import Book
 from crm.models import House
 
 
@@ -75,16 +75,6 @@ for model in models:
     except admin.sites.AlreadyRegistered:
         pass
 
-from django.apps import apps
-
-models = apps.get_models()
-
-for model in models:
-    try:
-        print(model)
-        # admin.site.register(model)
-    except:
-        pass
 
 from speedinfo.models import ViewProfiler
 

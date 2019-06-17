@@ -1,6 +1,8 @@
+import os
+
 import airbrake
 import dj_database_url
-import os
+from django.db.models.functions import Cast
 
 from .base import *
 
@@ -14,7 +16,7 @@ ALLOWED_HOSTS = ['*']
 
 DEVELOPMENT_APPS = (
     'debug_toolbar',
-    'silk',
+    # 'silk',
     'speedinfo',
 )
 
@@ -28,7 +30,7 @@ MIDDLEWARE_CLASSES = (
 
 DEV_MIDDLEWARE = [
     'debug_toolbar.middleware.DebugToolbarMiddleware',
-    'silk.middleware.SilkyMiddleware',
+    # 'silk.middleware.SilkyMiddleware',
     'speedinfo.middleware.ProfilerMiddleware',
     'django.middleware.cache.FetchFromCacheMiddleware',
     # 'querycount.middleware.QueryCountMiddleware',
@@ -126,3 +128,37 @@ CACHES = {
 
 print('dev')
 print(DATABASES["default"]["NAME"])
+
+import decimal
+from speedinfo.settings import ReportColumnFormat, DEFAULTS
+from django.db.models import F, ExpressionWrapper, FloatField, Max, Value
+from django.db.models.functions import Greatest
+
+# SPEEDINFO_REPORT_COLUMNS = [
+#     'impact_factor']
+# SPEEDINFO_REPORT_COLUMNS_FORMAT = [
+#     ReportColumnFormat(
+#         'impact factor',
+#         '{:.4f}',
+#         '',
+#         ExpressionWrapper(100.0 * F('anon_calls') / F('total_calls'), output_field=FloatField())
+#     )
+# ]
+
+from django.db.models import FloatField, ExpressionWrapper, F, Func
+
+template = '%(function)s%(expressions)s over()::numeric'
+fv2 = Func(Max('total_time'), function='', template=template)
+
+DEFAULTS['SPEEDINFO_REPORT_COLUMNS'] += ('impact_factor',)
+DEFAULTS['SPEEDINFO_REPORT_COLUMNS_FORMAT'].append(
+    ReportColumnFormat(
+        'Impact Factor',
+        '{:.2f}',
+        'impact_factor',
+        ExpressionWrapper(
+            F('total_time') / fv2,
+            output_field=FloatField()
+        )
+    )
+)
