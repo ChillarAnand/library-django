@@ -16,7 +16,7 @@ class BookAdmin(admin.ModelAdmin):
     # autocomplete_fields = ['author']
 
     list_display = ('name', 'author', 'delete', )
-    list_display = ('name', 'author', 'author_link', 'delete', 'borrowed', 'is_available', 'name', 'name')
+    list_display = ('name', 'author', 'author_link', 'delete', 'borrowed', 'is_available', 'toggle_availability')
 
     # list_display_links = ('name', 'author',)
 
@@ -35,6 +35,14 @@ class BookAdmin(admin.ModelAdmin):
     def toggle_availability(self, book):
         html = ''
         return format_html(html)
+
+    def get_urls(self):
+        urls = super().get_urls()
+        custom_urls = [
+            r'^(?P<book_id>.+)/deposit/$', self.admin_site.admin_view(self.toggle_book_availability()),
+        ]
+        return urls + custom_urls
+
 
 class AuthorAdmin(admin.ModelAdmin):
     search_fields = ('name',)
