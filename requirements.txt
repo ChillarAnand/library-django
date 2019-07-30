@@ -2,6 +2,8 @@ Django==2.0.4
 django_extensions==1.9.7
 
 celery
+psycopg2-binary==2.8.3
+djangorestframework
 
 
 # channels
@@ -23,5 +25,4 @@ airbrake==2.1.0
 django-silk==3.0.1
 dj_database_url
 drf_generators
-djangorestframework
 django-speedinfo==1.4.0
