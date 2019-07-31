@@ -26,12 +26,15 @@ INSTALLED_APPS = [
     # 'oauth2_provider',
     # 'channels',
 
-    'book',
-    'crm',
-    'chat',
     # 'rest_framework',
     'drf_generators',
     'django_extensions',
+
+    # our apps
+    'book',
+    'crm',
+    'chat',
+    'trash',
 ]
 
 SITE_ID = 1
