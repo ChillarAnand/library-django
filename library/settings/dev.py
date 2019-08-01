@@ -13,7 +13,7 @@ ALLOWED_HOSTS = ['*']
 
 
 DEVELOPMENT_APPS = (
-    'debug_toolbar',
+    # 'debug_toolbar',
     # 'silk',
     'speedinfo',
 )
@@ -27,7 +27,7 @@ MIDDLEWARE_CLASSES = (
 
 
 DEV_MIDDLEWARE = [
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
+    # 'debug_toolbar.middleware.DebugToolbarMiddleware',
     # 'silk.middleware.SilkyMiddleware',
     'speedinfo.middleware.ProfilerMiddleware',
     'django.middleware.cache.FetchFromCacheMiddleware',
@@ -35,7 +35,8 @@ DEV_MIDDLEWARE = [
     # 'django_pdb.middleware.PdbMiddleware',
 ]
 
-# MIDDLEWARE = DEV_MIDDLEWARE + MIDDLEWARE
+MIDDLEWARE = DEV_MIDDLEWARE + MIDDLEWARE
+
 
 INTERNAL_IPS = ALLOWED_HOSTS
 
@@ -101,12 +102,12 @@ except:
 #     logger.exception("Bad math.")
 
 
-DATABASES = {
-    'default': dj_database_url.config(
-        default='postgres://f:f@localhost/library',
-        conn_max_age=int(os.getenv('POSTGRES_CONN_MAX_AGE', 600))
-    )
-}
+# DATABASES = {
+#     'default': dj_database_url.config(
+#         default='postgres://f:f@localhost/library',
+#         conn_max_age=int(os.getenv('POSTGRES_CONN_MAX_AGE', 600))
+#     )
+# }
 
 # DATABASES = {
 #     'default': {
@@ -120,9 +121,11 @@ CACHES = {
     'default': {
         'BACKEND': 'speedinfo.backends.proxy_cache',
         'CACHE_BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
-        'LOCATION': '/var/tmp/django_cache',
+        'LOCATION': '/tmp/django_cache',
     }
 }
 
 print('dev')
 print(DATABASES["default"]["NAME"])
+print(DATABASES["default"])
+print(DATABASES)

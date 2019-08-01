@@ -36,12 +36,12 @@ class BookAdmin(admin.ModelAdmin):
         html = ''
         return format_html(html)
 
-    def get_urls(self):
-        urls = super().get_urls()
-        custom_urls = [
-            r'^(?P<book_id>.+)/deposit/$', self.admin_site.admin_view(self.toggle_book_availability()),
-        ]
-        return urls + custom_urls
+    # def get_urls(self):
+    #     urls = super().get_urls()
+    #     custom_urls = [
+    #         r'^(?P<book_id>.+)/deposit/$', self.admin_site.admin_view(self.toggle_book_availability()),
+    #     ]
+    #     return urls + custom_urls
 
 
 class AuthorAdmin(admin.ModelAdmin):
@@ -78,9 +78,18 @@ models = apps.get_models()
 for model in models:
     admin_class = type('AdminClass', (ListAdminMixin, admin.ModelAdmin), {})
     try:
+        continue
         admin.site.register(model, admin_class)
     except admin.sites.AlreadyRegistered:
         pass
+
+
+
+
+def load_dynamic_admin(database):
+    models_file = get_models(database)
+    import_module(models_file)
+
 
 from django.apps import apps
 
@@ -93,6 +102,5 @@ for model in models:
     except:
         pass
 
-from speedinfo.models import ViewProfiler
-
-admin.site.unregister(ViewProfiler)
+# from speedinfo.models import ViewProfiler
+# admin.site.unregister(ViewProfiler)
