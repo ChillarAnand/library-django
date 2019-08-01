@@ -78,6 +78,32 @@ DATABASES = {
     }
 }
 
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    }
+}
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'library',
+        'USER': 'anand',
+        'PASSWORD': 'f',
+        'HOST': 'localhost',
+        'PORT': 5432,
+    },
+    'legacy_db': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'spotley_wifi',
+        'USER': 'anand',
+        'PASSWORD': 'f',
+        'HOST': 'localhost',
+        'PORT': 5432,
+    }
+}
+
 
 AUTH_PASSWORD_VALIDATORS = [
     {

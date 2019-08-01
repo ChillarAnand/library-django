@@ -84,3 +84,24 @@ class HouseAdmin(admin.ModelAdmin):
 
 
 admin.site.register(House, HouseAdmin)
+
+
+
+def load_dynamic_admin(database):
+    models_file = get_models(database)
+    import_module(models_file)
+
+
+from django.apps import apps
+
+models = apps.get_models()
+
+for model in models:
+    try:
+        print(model)
+        # admin.site.register(model)
+    except:
+        pass
+
+# from speedinfo.models import ViewProfiler
+# admin.site.unregister(ViewProfiler)
