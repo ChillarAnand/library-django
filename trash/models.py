@@ -8,7 +8,7 @@ class Fruit(models.Model):
 class Basket(models.Model):
     limit_choices_to = {'id_in': [2, 3]}
     name = models.CharField(max_length=50, blank=True, null=True)
-    fruits = models.ManyToManyField(Fruit, through="BasketFruit", limit_choices_to=limit_choices_to)
+    fruits = models.ManyToManyField(Fruit, through="BasketFruit")
     # fruits = models.ManyToManyField(Fruit)
 
 

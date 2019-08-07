@@ -1,7 +1,17 @@
+import importlib
+import sys
+
+from django.conf import settings
 from django.conf.urls import url
 from django.contrib import admin
+from django.core.management import call_command
+from django.db import models
 from django.shortcuts import redirect
 from django.utils.html import format_html
+
+from book.models import Author
+from book.models import BestSeller
+from book.models import Book
 
 try:
     from django.urls import reverse
@@ -9,7 +19,6 @@ except ImportError:
     # django < 2
     from django.core.urlresolvers import reverse
 
-from . import models
 from crm.models import House
 
 
@@ -64,7 +73,7 @@ class BookAdmin(admin.ModelAdmin):
         return redirect(reverse("admin:book_book_changelist"))
 
 
-admin.site.register(models.Book, BookAdmin)
+admin.site.register(Book, BookAdmin)
 
 
 class AuthorAdmin(admin.ModelAdmin):
@@ -72,7 +81,7 @@ class AuthorAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'active')
 
 
-admin.site.register(models.Author, AuthorAdmin)
+admin.site.register(Author, AuthorAdmin)
 
 
 class HouseAdmin(admin.ModelAdmin):
@@ -86,22 +95,95 @@ class HouseAdmin(admin.ModelAdmin):
 admin.site.register(House, HouseAdmin)
 
 
+def get_models(database):
+    filename = '/tmp/models.py'
+    stdout_backup, sys.stdout = sys.stdout, open(filename, 'w+')
+    # with open(filename, 'w') as fh:
+    call_command('inspectdb', database=database)
+    sys.stdout = stdout_backup
+    return filename
+
+
+def import_module(models_file):
+    pass
+
+
+new_app_name = "my_new_app"
+
+settings.INSTALLED_APPS += (new_app_name,)
+# apps.app_configs = OrderedDict()
+# apps.ready = False
+# apps.populate(settings.INSTALLED_APPS)
+
+database = 'legacy_db'
+
 
 def load_dynamic_admin(database):
     models_file = get_models(database)
-    import_module(models_file)
+    spec = importlib.util.spec_from_file_location("trash.models", models_file)
+    # spec = importlib.util.spec_from_file_location("my_new_app.models", models_file)
+    foo = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(foo)
 
 
-from django.apps import apps
+load_dynamic_admin(database)
 
-models = apps.get_models()
 
-for model in models:
-    try:
-        print(model)
-        # admin.site.register(model)
-    except:
-        pass
+def get_related_field(name, admin_order_field=None, short_description=None):
+    """
+    Create a function that can be attached to a ModelAdmin to use as a list_display field, e.g:
+    client__name = getter_for_related_field('client__name', short_description='Client')
+    """
+    related_names = name.split('__')
 
-# from speedinfo.models import ViewProfiler
-# admin.site.unregister(ViewProfiler)
+    def dynamic_attribute(obj):
+        for related_name in related_names:
+            obj = getattr(obj, related_name)
+            return obj
+
+    dynamic_attribute.admin_order_field = admin_order_field or name
+    dynamic_attribute.short_description = short_description or related_names[-1].title().replace('_', ' ')
+    return dynamic_attribute
+
+
+class RelatedFieldAdmin(admin.ModelAdmin):
+    '''
+    Class
+    '''
+
+    def __getattr__(self, attr):
+        if '__' in attr:
+            return get_related_field(attr)
+
+        # not dynamic lookup, default behaviour
+        return self.__getattribute__(attr)
+
+    def get_queryset(self, request):
+        qs = super(RelatedFieldAdmin, self).get_queryset(request)
+
+        select_related = [field.rsplit('__', 1)[0] for field in self.list_display if '__' in field]
+
+        model = qs.model
+        for field_name in self.list_display:
+            try:
+                field = model._meta.get_field(field_name)
+            except models.FieldDoesNotExist:
+                continue
+            try:
+                remote_field = field.remote_field
+            except AttributeError:  # for Django<1.9
+                remote_field = field.rel
+            if isinstance(remote_field, models.ManyToOneRel):
+                select_related.append(field_name)
+
+        return qs.select_related(*select_related)
+
+
+class BestSellerAdmin(RelatedFieldAdmin):
+    list_display = ('book', 'book__author', 'book__author__name')
+
+    # list_display = ('book', 'book__author')
+    # book_author = get_related_field('book__author')
+
+
+admin.site.register(BestSeller, BestSellerAdmin)

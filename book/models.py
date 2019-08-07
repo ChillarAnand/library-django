@@ -13,14 +13,6 @@ class AuthorManager(models.Manager):
         return self.get_queryset().filter(active=True)
 
 
-class Author(models.Model):
-    name = models.CharField(max_length=100)
-    active = models.NullBooleanField(default=False)
-
-    objects = AuthorManager()
-
-    def __str__(self):
-        return self.name
 
 
 class BookQuerySet(models.QuerySet):
@@ -39,6 +31,16 @@ class BookManager(models.Manager):
         return self.get_queryset().filter(active=True)
 
 
+class Author(models.Model):
+    name = models.CharField(max_length=100)
+    active = models.NullBooleanField(default=False)
+
+    objects = AuthorManager()
+
+    def __str__(self):
+        return self.name
+
+
 class Book(models.Model):
     name = models.CharField(max_length=100)
     author = models.ForeignKey(Author, on_delete=models.SET_NULL, null=True, blank=True)
@@ -49,3 +51,9 @@ class Book(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class BestSeller(models.Model):
+    book = models.ForeignKey('Book', null=True, blank=True, on_delete=models.SET_NULL)
+    year = models.IntegerField(null=True, blank=True)
+    rank = models.IntegerField(null=True, blank=True)

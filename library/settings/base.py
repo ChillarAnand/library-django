@@ -89,17 +89,17 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'library',
-        'USER': 'anand',
-        'PASSWORD': 'f',
-        'HOST': 'localhost',
+        'USER': 'user',
+        'PASSWORD': 'password',
+        'HOST': '127.0.0.1',
         'PORT': 5432,
     },
     'legacy_db': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'spotley_wifi',
-        'USER': 'anand',
-        'PASSWORD': 'f',
-        'HOST': 'localhost',
+        'NAME': 'test',
+        'USER': 'user',
+        'PASSWORD': 'password',
+        'HOST': '127.0.0.1',
         'PORT': 5432,
     }
 }

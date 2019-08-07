@@ -3,8 +3,6 @@ from rest_framework.serializers import ModelSerializer
 from book.models import Author
 from book.models import Book
 
-print(__file__)
-
 
 class AuthorSerializer(ModelSerializer):
 

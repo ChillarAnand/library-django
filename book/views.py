@@ -12,8 +12,6 @@ from book.models import Book
 from book.serializers import AuthorSerializer
 from book.serializers import BookSerializer
 
-print(__file__)
-
 
 class AuthorViewSet(ViewSet):
 
