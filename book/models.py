@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 
 
 class AuthorQuerySet(models.QuerySet):
@@ -53,7 +54,15 @@ class Book(models.Model):
         return self.name
 
 
+class Library(models.Model):
+    name = models.CharField(max_length=256)
+
+
+class Bo
 class BestSeller(models.Model):
     book = models.ForeignKey('Book', null=True, blank=True, on_delete=models.SET_NULL)
     year = models.IntegerField(null=True, blank=True)
     rank = models.IntegerField(null=True, blank=True)
+
+    def get_absolute_url(self):
+        return reverse('index')

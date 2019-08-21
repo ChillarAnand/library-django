@@ -26,7 +26,7 @@ INSTALLED_APPS = [
     # 'oauth2_provider',
     # 'channels',
 
-    # 'rest_framework',
+    'rest_framework',
     'drf_generators',
     'django_extensions',
 
@@ -132,7 +132,10 @@ USE_TZ = True
 
 
 STATIC_URL = '/static/'
-
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static"),
+    '/tmp/',
+]
 
 from celery import Celery
 broker = 'memory://'

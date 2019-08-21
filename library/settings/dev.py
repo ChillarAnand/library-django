@@ -16,7 +16,7 @@ ALLOWED_HOSTS = ['*']
 
 DEVELOPMENT_APPS = (
     # 'debug_toolbar',
-    # 'silk',
+    'silk',
     'speedinfo',
 )
 
@@ -30,7 +30,7 @@ MIDDLEWARE_CLASSES = (
 
 DEV_MIDDLEWARE = [
     # 'debug_toolbar.middleware.DebugToolbarMiddleware',
-    # 'silk.middleware.SilkyMiddleware',
+    'silk.middleware.SilkyMiddleware',
     'speedinfo.middleware.ProfilerMiddleware',
     'django.middleware.cache.FetchFromCacheMiddleware',
     # 'querycount.middleware.QueryCountMiddleware',
@@ -79,12 +79,27 @@ LOGGING = {
             'class': 'logging.FileHandler',
             'filename': 'debug.log',
         },
+        'logstash': {
+            'level': 'INFO',
+            'class': 'logstash.TCPLogstashHandler',
+            'host': 'localhost',
+            'port': 5959,
+            'version': 1,
+            'message_type': 'logstash',
+            'fqdn': True,
+            'tags': ['library'],
+        }
 
     },
     'loggers': {
         'django.db.backends': {
             'level': 'DEBUG',
-            # 'handlers': ['console', ],
+            'handlers': ['console', 'logstash'],
+        },
+         'django.request': {
+            'handlers': ['logstash'],
+            'level': 'DEBUG',
+            'propagate': True,
         },
     }
 }
@@ -164,3 +179,8 @@ DEFAULTS['SPEEDINFO_REPORT_COLUMNS_FORMAT'].append(
 )
 print(DATABASES["default"])
 print(DATABASES)
+
+
+SILKY_PYTHON_PROFILER = True
+SILKY_PYTHON_PROFILER_BINARY = True
+SILKY_PYTHON_PROFILER_RESULT_PATH = '/tmp/'

@@ -22,21 +22,40 @@ except ImportError:
 from crm.models import House
 
 
-def toggle_book_availability(modeladmin, request, queryset):
-    for item in queryset:
-        item.is_available = not item.is_available
-        item.save()
+def make_books_available(modeladmin, request, queryset):
+    queryset.update(is_available=True)
 
+
+make_books_available.short_description = "Mark selected books as available"
+
+
+def make_books_unavailable(modeladmin, request, queryset):
+    queryset.update(is_available=False)
 
 class BookAdmin(admin.ModelAdmin):
     search_fields = ('name',)
     # autocomplete_fields = ['author']
-    actions = [toggle_book_availability]
+    actions = ('make_books_available',)
 
     list_display = ('name', 'author', 'delete', )
-    list_display = ('name', 'author', 'author_link', 'delete', 'borrowed', 'is_available', 'toggle_availability')
+    list_display = (
+        'name', 'author', 'is_available', 'delete', 'borrowed', 'is_available', 'toggle_availability', 'author_link')
+    list_display = (
+        'id', 'name', 'author', 'is_available', 'delete', 'author', 'author', 'author', 'author', 'author', 'author')
 
     list_display_links = ('name', 'author',)
+    list_display_links = ('id',)
+
+    def delete(self, obj):
+        view_name = "admin:{}_{}_delete".format(obj._meta.app_label, obj._meta.model_name)
+        link = reverse(view_name, args=[obj.pk])
+        html = '<input type="button" onclick="location.href=\'{}\'" value="Delete" />'.format(link)
+        return format_html(html)
+
+    def make_books_available(modeladmin, request, queryset):
+        queryset.update(is_available=True)
+
+    make_books_available.short_description = "Mark selected books as available"
 
     def author_link(self, book):
         if not book.author:
@@ -68,7 +87,7 @@ class BookAdmin(admin.ModelAdmin):
 
     def toggle_book_availability(self, request, book_id, *args, **kwargs):
         book = self.get_object(request, book_id)
-        book.is_available = not book.is_available
+        book.is_available = True
         book.save()
         return redirect(reverse("admin:book_book_changelist"))
 
@@ -78,10 +97,13 @@ admin.site.register(Book, BookAdmin)
 
 class AuthorAdmin(admin.ModelAdmin):
     search_fields = ('name',)
-    list_display = ('id', 'name', 'active')
+    list_display = ('id', 'name', 'active', 'active', 'active', 'name', 'name')
 
 
 admin.site.register(Author, AuthorAdmin)
+
+
+# admin.site.register(Author)
 
 
 class HouseAdmin(admin.ModelAdmin):

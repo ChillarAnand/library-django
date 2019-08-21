@@ -6,7 +6,7 @@ from book import views
 router = SimpleRouter()
 
 router.register(r'author', views.AuthorViewSet, 'Author')
-router.register(r'book', views.BookViewSet, 'Book')
+router.register(r'books', views.BookViewSet, 'Book')
 
 urlpatterns = [
     url(r'^bf$', views.book_form, name='book_form'),

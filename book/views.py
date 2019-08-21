@@ -1,3 +1,5 @@
+import time
+
 from django import forms
 from django.http import JsonResponse
 from django.http.response import HttpResponseRedirect
@@ -6,6 +8,7 @@ from django.shortcuts import render
 from django.urls import reverse
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
+from silk.profiling.profiler import silk_profile
 
 from book.models import Author
 from book.models import Book
@@ -55,16 +58,22 @@ class AuthorViewSet(ViewSet):
 
 class BookViewSet(ViewSet):
 
+    @silk_profile()
     def list(self, request):
         queryset = Book.objects.all()
         serializer = BookSerializer(queryset, many=True)
+        x = []
+        for i in range(1000_000_0):
+            x.append(2)
         return Response(serializer.data)
 
+    @silk_profile()
     def create(self, request):
         serializer = BookSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=201)
+        time.sleep(2)
         return Response(serializer.errors, status=400)
 
     def retrieve(self, request, pk=None):
@@ -73,7 +82,9 @@ class BookViewSet(ViewSet):
         serializer = BookSerializer(item)
         return Response(serializer.data)
 
+    @silk_profile()
     def update(self, request, pk=None):
+        time.sleep(3)
         try:
             item = Book.objects.get(pk=pk)
         except Book.DoesNotExist:
@@ -102,6 +113,8 @@ email_book = test
 home = test
 
 
+
+@silk_profile()
 def hello(request):
     return JsonResponse({'data': 'hello'})
 

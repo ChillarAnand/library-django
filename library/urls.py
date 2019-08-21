@@ -23,13 +23,13 @@ urlpatterns = [
 
     url(r'^email-book/$', bviews.email_book, name='email-book', ),
     url(r'^bf/$', bviews.book_form, name='bf', ),
-    url(r'^hello$', bviews.hello, name='hello', ),
+    url(r'^hello', bviews.hello, name='hello', ),
 ]
 
 if settings.DEBUG:
-    pass
-
     # urlpatterns = [
     #                   url(r'^__debug__/', include(debug_toolbar.urls)),
     #               ] + urlpatterns
-    # urlpatterns += [url(r'^silk/', include('silk.urls', namespace='silk'))]
+    urlpatterns += [url(r'^silk/', include('silk.urls', namespace='silk'))]
+
+    pass
