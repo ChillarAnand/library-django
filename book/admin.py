@@ -4,14 +4,18 @@ import sys
 from django.conf import settings
 from django.conf.urls import url
 from django.contrib import admin
+from django.contrib.postgres.fields import JSONField
 from django.core.management import call_command
 from django.db import models
 from django.shortcuts import redirect
 from django.utils.html import format_html
+from django_json_widget.widgets import JSONEditorWidget
+from django_otp.admin import OTPAdminSite
 
 from book.models import Author
 from book.models import BestSeller
 from book.models import Book
+from book.models import BookProxy
 
 try:
     from django.urls import reverse
@@ -19,7 +23,38 @@ except ImportError:
     # django < 2
     from django.core.urlresolvers import reverse
 
-from crm.models import House
+
+class LibraryAdminSite(OTPAdminSite):
+    pass
+
+
+admin_site = LibraryAdminSite()
+
+# admin.site.__class__ = OTPAdminSite
+
+
+# class LibraryAdminSite(AdminSite):
+#     def get_app_list(self, request):
+#         """
+#         Return a sorted list of all the installed apps that have been
+#         registered in this site.
+#         """
+#         ordering = {
+#             "Library": 1,
+#             "Book": 4
+#         }
+#         app_dict = self._build_app_dict(request)
+#         app_list = sorted(app_dict.values(), key=lambda x: x['name'].lower())
+#
+#         pprint(app_list)
+#         # Sort the models alphabetically within each app.
+#         for app in app_list:
+#             app['models'].sort(key=lambda x: ordering[x['name']])
+#
+#         return app_list
+#
+# admin.site = LibraryAdminSite()
+admin_site = LibraryAdminSite()
 
 
 def make_books_available(modeladmin, request, queryset):
@@ -33,6 +68,8 @@ def make_books_unavailable(modeladmin, request, queryset):
     queryset.update(is_available=False)
 
 class BookAdmin(admin.ModelAdmin):
+    # list_editable = ('author', 'name', 'is_available')
+
     search_fields = ('name',)
     # autocomplete_fields = ['author']
     actions = ('make_books_available',)
@@ -41,7 +78,11 @@ class BookAdmin(admin.ModelAdmin):
     list_display = (
         'name', 'author', 'is_available', 'delete', 'borrowed', 'is_available', 'toggle_availability', 'author_link')
     list_display = (
-        'id', 'name', 'author', 'is_available', 'delete', 'author', 'author', 'author', 'author', 'author', 'author')
+        'id', 'name', 'author',
+        # 'is_available', 'delete',
+        # 'author',
+        'author', 'author', 'author', 'author', 'author',
+    )
 
     list_display_links = ('name', 'author',)
     list_display_links = ('id',)
@@ -92,7 +133,47 @@ class BookAdmin(admin.ModelAdmin):
         return redirect(reverse("admin:book_book_changelist"))
 
 
-admin.site.register(Book, BookAdmin)
+class BookAdmin2(admin.ModelAdmin):
+    list_display = ('id', 'name_colored', 'thumbnail', 'author', 'published_date', 'is_available', 'cover', 'thumbnail')
+    search_fields = ('name',)
+    list_filter = ('is_available',)
+    date_hierarchy = 'published_date'
+
+    prepopulated_fields = {"slug": ("name",)}
+    readonly_fields = ('created_at', 'updated_at')
+
+    formfield_overrides = {
+        JSONField: {
+            'widget': JSONEditorWidget
+        },
+    }
+
+    def name_colored(self, obj):
+        if obj.is_available:
+            color_code = '00FF00'
+        else:
+            color_code = 'FF0000'
+        html = '<span style="color: #{};">{}</span>'.format(color_code, obj.name)
+        return format_html(html)
+
+    name_colored.admin_order_field = 'name'
+    name_colored.short_description = 'name'
+
+    def thumbnail(self, obj):
+        width, height = 100, 140
+        if not obj.cover:
+            return
+        print(obj.cover.url)
+        return format_html('<img src="{url}" width="{width}" height={height} />'.format(
+            url=obj.cover.url,
+            width=width,
+            height=height,
+        ))
+
+        # def get_queryset(self, request):
+        #     qs = super().get_queryset(request)
+        #     qs = qs.only('id', 'name')
+        #     return qs
 
 
 class AuthorAdmin(admin.ModelAdmin):
@@ -106,15 +187,6 @@ admin.site.register(Author, AuthorAdmin)
 # admin.site.register(Author)
 
 
-class HouseAdmin(admin.ModelAdmin):
-    def url_for_result(self, house):
-        html_string = format_html(u'<a href="/admin/crm/house/{}/change/">{}', house.id, house.id)
-        return html_string
-
-    list_display = ('id', 'url_for_result', 'id', )
-
-
-admin.site.register(House, HouseAdmin)
 
 
 def get_models(database):
@@ -208,4 +280,12 @@ class BestSellerAdmin(RelatedFieldAdmin):
     # book_author = get_related_field('book__author')
 
 
-admin.site.register(BestSeller, BestSellerAdmin)
+class BookProxyAdmin(admin.ModelAdmin):
+    list_display = ('name',)
+
+
+admin_site.register(BestSeller, BestSellerAdmin)
+admin_site.register(BookProxy, BookProxyAdmin)
+# admin.site.register(Book, BookAdmin)
+admin.site.register(Book, BookAdmin2)
+# admin.site.register(Book)

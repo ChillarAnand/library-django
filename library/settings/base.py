@@ -3,9 +3,9 @@ import os
 
 env = os.environ.get
 
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
+print(BASE_DIR)
 
 SECRET_KEY = 'q6emagfzaeftr*4$o@@608v3!)(^cmvwm@2kcatu7if(c#0w+@'
 
@@ -132,10 +132,15 @@ USE_TZ = True
 
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static"),
-    '/tmp/',
-]
+# STATICFILES_DIRS = [
+#     os.path.join(BASE_DIR, "static"),
+# ]
+STATIC_ROOT = 'static'
+# print(STATICFILES_DIRS)
+
+# MEDIA_ROOT = os.path.join(BASE_DIR)
+MEDIA_ROOT = BASE_DIR
+MEDIA_URL = '/media/'
 
 from celery import Celery
 broker = 'memory://'

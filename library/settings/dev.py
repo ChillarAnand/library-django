@@ -10,14 +10,19 @@ SECRET_KEY = 'q6emagfzaeftr*4$o@@608v3!)(^cmvwm@2kcatu7if(c#0w+@'
 
 DEBUG = True
 
-ALLOWED_HOSTS = ['0.0.0.0', 'localhost', '127.0.0.1']
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['0.0.0.0', 'localhost', '127.0.0.1', '*']
+# ALLOWED_HOSTS = ['*']
 
 
 DEVELOPMENT_APPS = (
-    # 'debug_toolbar',
-    'silk',
-    'speedinfo',
+    'debug_toolbar',
+    # 'silk',
+    # 'speedinfo',
+    'django_json_widget',
+    # 'xadmin',
+    # 'djadmin2',
+    'django_otp',
+    'django_otp.plugins.otp_totp',
 )
 
 INSTALLED_APPS += DEVELOPMENT_APPS
@@ -29,14 +34,22 @@ MIDDLEWARE_CLASSES = (
 
 
 DEV_MIDDLEWARE = [
-    # 'debug_toolbar.middleware.DebugToolbarMiddleware',
-    'silk.middleware.SilkyMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'speedinfo.middleware.ProfilerMiddleware',
     'django.middleware.cache.FetchFromCacheMiddleware',
     # 'querycount.middleware.QueryCountMiddleware',
     # 'django_pdb.middleware.PdbMiddleware',
+    # 'django_otp.middleware.OTPMiddleware',
 ]
 
+SILK_ENABLED = 'silk' in INSTALLED_APPS
+
+if SILK_ENABLED:
+    DEV_MIDDLEWARE.append(
+        'silk.middleware.SilkyMiddleware',
+    )
+
+# MIDDLEWARE = MIDDLEWARE + DEV_MIDDLEWARE
 MIDDLEWARE = DEV_MIDDLEWARE + MIDDLEWARE
 
 INTERNAL_IPS = ALLOWED_HOSTS
@@ -184,3 +197,4 @@ print(DATABASES)
 SILKY_PYTHON_PROFILER = True
 SILKY_PYTHON_PROFILER_BINARY = True
 SILKY_PYTHON_PROFILER_RESULT_PATH = '/tmp/'
+print(DEBUG)

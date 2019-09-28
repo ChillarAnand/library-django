@@ -16,7 +16,7 @@ class BookConfig(AppConfig):
         models = apps.get_models()
         for model in models:
             try:
-                admin.site.register(model, ListModelAdmin)
+                # admin.site.register(model, ListModelAdmin)
                 pass
             except admin.sites.AlreadyRegistered:
                 pass

@@ -1,3 +1,4 @@
+from django.contrib.postgres.fields import JSONField
 from django.db import models
 from django.urls import reverse
 
@@ -42,23 +43,38 @@ class Author(models.Model):
         return self.name
 
 
-class Book(models.Model):
+class TimeAuditModel(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        abstract = True
+
+
+class Book(TimeAuditModel):
     name = models.CharField(max_length=100)
+    slug = models.SlugField(max_length=100)
     author = models.ForeignKey(Author, on_delete=models.SET_NULL, null=True, blank=True)
-    borrowed = models.CharField(max_length=100, default='')
     is_available = models.BooleanField(default=True)
+    published_date = models.DateField(null=True, blank=True)
+    cover = models.FileField(null=True, blank=True, upload_to='files/')
+    format = JSONField(blank=True, null=True)
 
-    objects = BookManager()
+    # sobjects = BookManager()
 
-    def __str__(self):
-        return self.name
+    # def __str__(self):
+    #     return self.name
+
+
+class BookProxy(Book):
+    class Meta:
+        proxy = True
 
 
 class Library(models.Model):
     name = models.CharField(max_length=256)
 
 
-class Bo
 class BestSeller(models.Model):
     book = models.ForeignKey('Book', null=True, blank=True, on_delete=models.SET_NULL)
     year = models.IntegerField(null=True, blank=True)
