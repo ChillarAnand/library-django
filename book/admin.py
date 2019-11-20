@@ -4,12 +4,10 @@ import sys
 from django.conf import settings
 from django.conf.urls import url
 from django.contrib import admin
-from django.contrib.postgres.fields import JSONField
 from django.core.management import call_command
 from django.db import models
 from django.shortcuts import redirect
 from django.utils.html import format_html
-from django_json_widget.widgets import JSONEditorWidget
 from django_otp.admin import OTPAdminSite
 
 from book.models import Author
@@ -142,11 +140,11 @@ class BookAdmin2(admin.ModelAdmin):
     prepopulated_fields = {"slug": ("name",)}
     readonly_fields = ('created_at', 'updated_at')
 
-    formfield_overrides = {
-        JSONField: {
-            'widget': JSONEditorWidget
-        },
-    }
+    # formfield_overrides = {
+    #     JSONField: {
+    #         'widget': JSONEditorWidget
+    #     },
+    # }
 
     def name_colored(self, obj):
         if obj.is_available:

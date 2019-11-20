@@ -55,8 +55,8 @@ class Book(TimeAuditModel):
     name = models.CharField(max_length=100)
     slug = models.SlugField(max_length=100)
     author = models.ForeignKey(Author, on_delete=models.SET_NULL, null=True, blank=True)
-    is_available = models.BooleanField(default=True)
-    published_date = models.DateField(null=True, blank=True)
+    is_available = models.BooleanField(default=True, help_text='Is the book available to buy?')
+    published_date = models.DateField(null=True, blank=True, help_text='Please enter the date in <b>YYYY-MM-DD</b> format.')
     cover = models.FileField(null=True, blank=True, upload_to='files/')
     format = JSONField(blank=True, null=True)
 

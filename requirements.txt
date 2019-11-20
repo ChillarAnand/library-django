@@ -26,3 +26,5 @@ django-silk==3.0.1
 dj_database_url
 drf_generators
 django-speedinfo==1.4.0
+django_json_widget
+django_otp

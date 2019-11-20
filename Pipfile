@@ -24,6 +24,7 @@ dj-database-url = "*"
 psycopg2 = "*"
 drf-generators = "*"
 djangorestframework = "*"
+django-celery-results = "*"
 
 [requires]
 python_version = "3.7"

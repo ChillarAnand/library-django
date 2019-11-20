@@ -29,6 +29,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'drf_generators',
     'django_extensions',
+    'django_celery_results',
 
     # our apps
     'book',
@@ -182,3 +183,4 @@ CHANNEL_LAYERS = {
 
 
 TEST = True
+CELERY_RESULT_BACKEND = 'django-db'
