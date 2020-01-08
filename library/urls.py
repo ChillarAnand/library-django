@@ -5,6 +5,7 @@ from django.conf.urls import url
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.views import generic
+from controlcenter.views import controlcenter
 
 from book import views as bviews
 
@@ -15,6 +16,7 @@ admin.site.index_title = "Welcome to library admin portal"
 
 urlpatterns = [
     url(r'^$', generic.RedirectView.as_view(url='/admin/', permanent=True), name='index'),
+    url(r'^admin/dashboard/', controlcenter.urls),
     url(r'^admin/', admin.site.urls),
     # url(r'^sadmin/', admin_site.urls),
     url(r'^chat/', include('chat.urls')),

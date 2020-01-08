@@ -26,7 +26,7 @@ class LibraryAdminSite(OTPAdminSite):
     pass
 
 
-admin_site = LibraryAdminSite()
+# admin_site = LibraryAdminSite()
 
 # admin.site.__class__ = OTPAdminSite
 
@@ -51,8 +51,8 @@ admin_site = LibraryAdminSite()
 #
 #         return app_list
 #
-# admin.site = LibraryAdminSite()
-admin_site = LibraryAdminSite()
+# admin_site = LibraryAdminSite()
+admin_site = admin
 
 
 def make_books_available(modeladmin, request, queryset):
@@ -134,6 +134,7 @@ class BookAdmin(admin.ModelAdmin):
 class BookAdmin2(admin.ModelAdmin):
     list_display = ('id', 'name_colored', 'thumbnail', 'author', 'published_date', 'is_available', 'cover', 'thumbnail')
     search_fields = ('name',)
+    autocomplete_fields = ['author']
     list_filter = ('is_available',)
     date_hierarchy = 'published_date'
 
@@ -172,6 +173,84 @@ class BookAdmin2(admin.ModelAdmin):
         #     qs = super().get_queryset(request)
         #     qs = qs.only('id', 'name')
         #     return qs
+
+
+class CenturyFilter(admin.SimpleListFilter):
+    title = 'century'
+    parameter_name = 'published_date'
+
+    def lookups(self, request, model_admin):
+        return (
+            (21, '21st century'),
+            (20, '20th century'),
+        )
+
+    def queryset(self, request, queryset):
+        value = self.value()
+        if not value:
+            return queryset
+
+        start = (int(value) - 1) * 100
+        end = start + 99
+        return queryset.filter(published_date__year__gte=start, published_date__year__lte=end)
+
+
+class InputFilter(admin.SimpleListFilter):
+    template = 'admin_input_filter.html'
+
+    def lookups(self, request, model_admin):
+        return ((),)
+
+    def choices(self, changelist):
+        all_choice = next(super().choices(changelist))
+        all_choice['query_parts'] = (
+            (k, v)
+            for k, v in changelist.get_filters_params().items()
+            if k != self.parameter_name
+        )
+        yield all_choice
+
+
+class PublishedYearFilter2(InputFilter):
+    title = 'published year'
+    parameter_name = 'published_date'
+
+    def queryset(self, request, queryset):
+        value = self.value()
+        if value:
+            return queryset.filter(published_date__year=value)
+
+
+class PublishedYearFilter(admin.SimpleListFilter):
+    title = 'published year'
+    parameter_name = 'published_date'
+    template = 'admin_input_filter.html'
+
+    def lookups(self, request, model_admin):
+        return ((None, None),)
+
+    def choices(self, changelist):
+        query_params = changelist.get_filters_params()
+        query_params.pop(self.parameter_name, None)
+        all_choice = next(super().choices(changelist))
+        all_choice['query_params'] = query_params
+        yield all_choice
+
+    def queryset(self, request, queryset):
+        self.qvalue = self.value()
+        if self.qvalue:
+            return queryset.filter(published_date__year=self.qvalue)
+
+
+class BookAdminFilter(admin.ModelAdmin):
+    list_display = ('id', 'name', 'author', 'published_date', 'is_available', 'name', 'author',)
+    # list_filter = ('is_available', CenturyFilter, PublishedYearFilter)
+
+
+    list_filter = ('is_available', )
+    list_filter = (CenturyFilter, )
+    list_filter = (PublishedYearFilter, 'is_available',)
+    search_fields = ('name',)
 
 
 class AuthorAdmin(admin.ModelAdmin):
@@ -273,6 +352,7 @@ class RelatedFieldAdmin(admin.ModelAdmin):
 
 class BestSellerAdmin(RelatedFieldAdmin):
     list_display = ('book', 'book__author', 'book__author__name')
+    autocomplete_fields = ['book']
 
     # list_display = ('book', 'book__author')
     # book_author = get_related_field('book__author')
@@ -282,8 +362,14 @@ class BookProxyAdmin(admin.ModelAdmin):
     list_display = ('name',)
 
 
-admin_site.register(BestSeller, BestSellerAdmin)
+# admin_site.register(BestSeller, BestSellerAdmin)
+admin_site.register(BestSeller)
 admin_site.register(BookProxy, BookProxyAdmin)
-# admin.site.register(Book, BookAdmin)
-admin.site.register(Book, BookAdmin2)
+
 # admin.site.register(Book)
+# admin.site.register(Book, BookAdmin)
+# admin.site.register(Book, BookAdmin2)
+admin.site.register(Book, BookAdminFilter)
+
+# admin.site.register(BestSeller)
+admin.site.register(BestSeller, BestSellerAdmin)

@@ -1,3 +1,4 @@
+import concurrent
 import time
 
 from django import forms
@@ -60,13 +61,20 @@ class AuthorViewSet(ViewSet):
 
 class BookViewSet(ViewSet):
 
-    def list(self, request):
+    @staticmethod
+    def get_books(*args):
         queryset = Book.objects.all()
         serializer = BookSerializer(queryset, many=True)
-        x = []
-        for i in range(1000_000_0):
-            x.append(2)
-        return Response(serializer.data)
+        response = serializer.data
+        return response
+
+    def list(self, request):
+        with concurrent.futures.ThreadPoolExecutor() as executor:
+            future = executor.submit(BookViewSet.get_books, ())
+            return_value = future.result()
+        # return_value = BookViewSet.get_books()
+        print(return_value)
+        return Response(return_value)
 
     def create(self, request):
         serializer = BookSerializer(data=request.data)
