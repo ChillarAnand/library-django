@@ -1,4 +1,5 @@
 import os
+from pprint import pprint
 
 import airbrake
 import dj_database_url
@@ -15,14 +16,17 @@ ALLOWED_HOSTS = ['0.0.0.0', 'localhost', '127.0.0.1', '*']
 
 
 DEVELOPMENT_APPS = (
+    'advanced_filters',
+    'autofixture',
     'debug_toolbar',
     # 'silk',
     # 'speedinfo',
-    'django_json_widget',
+    # 'django_json_widget',
     # 'xadmin',
     # 'djadmin2',
-    'django_otp',
-    'django_otp.plugins.otp_totp',
+    # 'django_otp',
+    # 'django_otp.plugins.otp_totp',
+    # 'elasticapm.contrib.django',
 )
 
 INSTALLED_APPS += DEVELOPMENT_APPS
@@ -158,7 +162,7 @@ print('dev')
 print(DATABASES["default"]["NAME"])
 
 import decimal
-from speedinfo.settings import ReportColumnFormat, DEFAULTS
+# from speedinfo.settings import ReportColumnFormat, DEFAULTS
 from django.db.models import F, ExpressionWrapper, FloatField, Max, Value
 from django.db.models.functions import Greatest
 
@@ -178,23 +182,33 @@ from django.db.models import FloatField, ExpressionWrapper, F, Func
 template = '%(function)s%(expressions)s over()::numeric'
 fv2 = Func(Max('total_time'), function='', template=template)
 
-DEFAULTS['SPEEDINFO_REPORT_COLUMNS'] += ('impact_factor',)
-DEFAULTS['SPEEDINFO_REPORT_COLUMNS_FORMAT'].append(
-    ReportColumnFormat(
-        'Impact Factor',
-        '{:.2f}',
-        'impact_factor',
-        ExpressionWrapper(
-            F('total_time') / fv2,
-            output_field=FloatField()
-        )
-    )
-)
-print(DATABASES["default"])
-print(DATABASES)
+# DEFAULTS['SPEEDINFO_REPORT_COLUMNS'] += ('impact_factor',)
+# DEFAULTS['SPEEDINFO_REPORT_COLUMNS_FORMAT'].append(
+#     ReportColumnFormat(
+#         'Impact Factor',
+#         '{:.2f}',
+#         'impact_factor',
+#         ExpressionWrapper(
+#             F('total_time') / fv2,
+#             output_field=FloatField()
+#         )
+#     )
+# )
+pprint(DATABASES["default"])
+pprint(DATABASES)
 
+# ELASTIC_APM = {
+#     'SERVICE_NAME': 'library',
+#     'SECRET_TOKEN': 'library',
+#     'DEBUG': True,
+# }
 
 SILKY_PYTHON_PROFILER = True
 SILKY_PYTHON_PROFILER_BINARY = True
 SILKY_PYTHON_PROFILER_RESULT_PATH = '/tmp/'
 print(DEBUG)
+
+INSTALLED_APPS += ('controlcenter',)
+CONTROLCENTER_DASHBOARDS = (
+    ('bookdash', 'book.dashboard.BookDashboard'),
+)

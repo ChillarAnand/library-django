@@ -14,6 +14,8 @@ from book.models import Author
 from book.models import BestSeller
 from book.models import Book
 from book.models import BookProxy
+from advanced_filters.admin import AdminAdvancedFiltersMixin
+
 
 try:
     from django.urls import reverse
@@ -362,6 +364,13 @@ class BookProxyAdmin(admin.ModelAdmin):
     list_display = ('name',)
 
 
+class BookAdAdminFilter(AdminAdvancedFiltersMixin, admin.ModelAdmin):
+    search_fields = ('name', )
+    list_display = ('id', 'name', 'author', 'published_date', 'is_available', 'name', 'author',)
+    advanced_filter_fields = ('name', 'published_date', 'author', 'is_available')
+    date_hierarchy = 'published_date'
+
+
 # admin_site.register(BestSeller, BestSellerAdmin)
 admin_site.register(BestSeller)
 admin_site.register(BookProxy, BookProxyAdmin)
@@ -369,7 +378,8 @@ admin_site.register(BookProxy, BookProxyAdmin)
 # admin.site.register(Book)
 # admin.site.register(Book, BookAdmin)
 # admin.site.register(Book, BookAdmin2)
-admin.site.register(Book, BookAdminFilter)
+# admin.site.register(Book, BookAdminFilter)
+admin.site.register(Book, BookAdAdminFilter)
 
 # admin.site.register(BestSeller)
 admin.site.register(BestSeller, BestSellerAdmin)

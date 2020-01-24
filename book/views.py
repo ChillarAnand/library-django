@@ -63,6 +63,7 @@ class BookViewSet(ViewSet):
 
     @staticmethod
     def get_books(*args):
+        # queryset = Book.objects.select_for_update().all()
         queryset = Book.objects.all()
         serializer = BookSerializer(queryset, many=True)
         response = serializer.data
@@ -72,7 +73,10 @@ class BookViewSet(ViewSet):
         with concurrent.futures.ThreadPoolExecutor() as executor:
             future = executor.submit(BookViewSet.get_books, ())
             return_value = future.result()
+
+        # Book.objects.select_for_update().first()
         # return_value = BookViewSet.get_books()
+
         print(return_value)
         return Response(return_value)
 

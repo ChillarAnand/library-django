@@ -35,6 +35,8 @@ class BookManager(models.Manager):
 
 class Author(models.Model):
     name = models.CharField(max_length=100)
+    gender = models.CharField(max_length=100, null=True, blank=True)
+    dob = models.DateField(null=True, blank=True, help_text='Please enter the date in <b>YYYY-MM-DD</b> format.')
     active = models.NullBooleanField(default=False)
 
     objects = AuthorManager()
@@ -58,6 +60,7 @@ class Book(TimeAuditModel):
     is_available = models.BooleanField(default=True, help_text='Is the book available to buy?')
     published_date = models.DateField(null=True, blank=True, help_text='Please enter the date in <b>YYYY-MM-DD</b> format.')
     cover = models.FileField(null=True, blank=True, upload_to='files/')
+    rating = models.FloatField(null=True, blank=True)
     format = JSONField(blank=True, null=True)
 
     # sobjects = BookManager()

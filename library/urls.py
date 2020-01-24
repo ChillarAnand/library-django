@@ -16,6 +16,7 @@ admin.site.index_title = "Welcome to library admin portal"
 
 urlpatterns = [
     url(r'^$', generic.RedirectView.as_view(url='/admin/', permanent=True), name='index'),
+    url(r'^advanced_filters/', include('advanced_filters.urls')),
     url(r'^admin/dashboard/', controlcenter.urls),
     url(r'^admin/', admin.site.urls),
     # url(r'^sadmin/', admin_site.urls),
