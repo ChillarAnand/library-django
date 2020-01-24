@@ -288,7 +288,7 @@ settings.INSTALLED_APPS += (new_app_name,)
 # apps.ready = False
 # apps.populate(settings.INSTALLED_APPS)
 
-database = 'legacy_db'
+# database = 'legacy_db'
 
 
 def load_dynamic_admin(database):
@@ -299,7 +299,7 @@ def load_dynamic_admin(database):
     spec.loader.exec_module(foo)
 
 
-load_dynamic_admin(database)
+# load_dynamic_admin(database)
 
 
 def get_related_field(name, admin_order_field=None, short_description=None):

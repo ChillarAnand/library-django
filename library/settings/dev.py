@@ -135,20 +135,12 @@ except:
 #     logger.exception("Bad math.")
 
 
-# DATABASES = {
-#     'default': dj_database_url.config(
-#         default='postgres://f:f@localhost/library',
-#         conn_max_age=int(os.getenv('POSTGRES_CONN_MAX_AGE', 600))
-#     )
-# }
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': 'library.db',
-#         # 'NAME': '/Users/curatech/projects/library/library',
-#     }
-# }
+DATABASES = {
+    'default': dj_database_url.config(
+        default=os.getenv('DATABASE_URL'),
+        conn_max_age=int(os.getenv('POSTGRES_CONN_MAX_AGE', 600)),
+    )
+}
 
 CACHES = {
     'default': {
@@ -159,7 +151,7 @@ CACHES = {
 }
 
 print('dev')
-print(DATABASES["default"]["NAME"])
+# print(DATABASES["default"]["NAME"])
 
 import decimal
 # from speedinfo.settings import ReportColumnFormat, DEFAULTS
@@ -208,7 +200,7 @@ SILKY_PYTHON_PROFILER_BINARY = True
 SILKY_PYTHON_PROFILER_RESULT_PATH = '/tmp/'
 print(DEBUG)
 
-INSTALLED_APPS += ('controlcenter',)
-CONTROLCENTER_DASHBOARDS = (
-    ('bookdash', 'book.dashboard.BookDashboard'),
-)
+# INSTALLED_APPS += ('controlcenter',)
+# CONTROLCENTER_DASHBOARDS = (
+#     ('bookdash', 'book.dashboard.BookDashboard'),
+# )
