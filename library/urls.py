@@ -19,6 +19,8 @@ urlpatterns = [
     url(r'^advanced_filters/', include('advanced_filters.urls')),
     url(r'^admin/dashboard/', controlcenter.urls),
     url(r'^admin/', admin.site.urls),
+    url(r'^hadmin/', include('admin_honeypot.urls', namespace='admin_honeypot')),
+
     # url(r'^sadmin/', admin_site.urls),
     url(r'^chat/', include('chat.urls')),
     url(r'^book/', include('book.urls')),

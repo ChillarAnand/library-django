@@ -28,3 +28,4 @@ drf_generators
 django-speedinfo==1.4.0
 django_json_widget
 django_otp
+django-admin-honeypot

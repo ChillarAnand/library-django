@@ -204,3 +204,5 @@ print(DEBUG)
 # CONTROLCENTER_DASHBOARDS = (
 #     ('bookdash', 'book.dashboard.BookDashboard'),
 # )
+
+INSTALLED_APPS += ('admin_honeypot',)
