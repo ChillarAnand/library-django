@@ -1,9 +1,9 @@
+from controlcenter import Dashboard
+from controlcenter import widgets
 from django.db import connection
-from django.db.models import Sum, Count
-
-from controlcenter import Dashboard, widgets
-from book.models import Book
 from django.db.models import Count
+
+from book.models import Book
 
 
 class BookList(widgets.ItemList):
@@ -17,15 +17,15 @@ class BookSeriesChart(widgets.TimeSeriesChart):
         x = [
             [{'x': book.created_at.timestamp(), 'y': book.name} for book in Book.objects.all()],
         ]
-        print(x)
+        # print(x)
         return x
 
 
 class BookLineChart(widgets.LineChart):
     def series(self):
-        qs = Book.objects.values('published_date').annotate(count=Count('published_date'))
+        # qs = Book.objects.values('published_date').annotate(count=Count('published_date'))
         truncate_year = connection.ops.date_trunc_sql('year', 'published_date')
-        qs = Book.objects.extra({'year':truncate_year})
+        qs = Book.objects.extra({'year': truncate_year})
         qs = qs.values('year').annotate(count=Count('pk'))
 
         x = [
@@ -33,6 +33,13 @@ class BookLineChart(widgets.LineChart):
         ]
         print(x)
         return x
+
+    def labels(self):
+        return self.series
+
+    # def legend(self):
+    #     # Displays labels in legend
+    #     return [x for x, y in self.series()[0][0]]
 
 
 class BookBarChart(widgets.TimeSeriesChart):
@@ -42,11 +49,10 @@ class BookBarChart(widgets.TimeSeriesChart):
     limit_to = None
 
 
-
 class BookDashboard(Dashboard):
     widgets = (
         BookList,
+        BookLineChart,
         BookSeriesChart,
         BookBarChart,
-        BookLineChart,
     )

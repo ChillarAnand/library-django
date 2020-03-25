@@ -1,6 +1,7 @@
 from django.contrib.postgres.fields import JSONField
 from django.db import models
 from django.urls import reverse
+from django.contrib.auth.models import User
 
 
 class AuthorQuerySet(models.QuerySet):
@@ -69,6 +70,11 @@ class Book(TimeAuditModel):
         return self.name or ''
 
 
+class Article(TimeAuditModel):
+    name = models.CharField(max_length=100)
+    author = models.ForeignKey(Author, on_delete=models.SET_NULL, null=True, blank=True)
+
+
 class BookProxy(Book):
     class Meta:
         proxy = True
@@ -91,3 +97,14 @@ class BestSeller(models.Model):
             return self.book.name or ''
         else:
             return ''
+
+
+class BorrowedBook(models.Model):
+    book = models.ForeignKey('Book', null=True, blank=True, on_delete=models.SET_NULL)
+    user = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
+    borrowed_date = models.DateField(null=True, blank=True)
+
+
+class BorrowedBookDashboard(BorrowedBook):
+    class Meta:
+        proxy = True

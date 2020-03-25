@@ -1,0 +1,30 @@
+{% extends "admin/base.html" %}
+
+{% block nav-global %}
+
+<div class="tabs">
+    <ul class="navbar-nav mr-auto">
+        {% for app in app_list %}
+        <li>
+            <a href="{{ app.app_url }}">
+                {{ app.name }}
+            </a>
+
+            <ul>
+                {% for model in app.models %}
+                <li><a href="{{ model.admin_url }}">{{ model.name }}</a></li>
+                {% endfor %}
+            </ul>
+
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+
+{% endblock %}
+
+
+{% block footer %}
+test
+
+{% endblock %}

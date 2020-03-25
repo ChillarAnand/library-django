@@ -1,21 +1,24 @@
 import importlib
 import sys
 
+from advanced_filters.admin import AdminAdvancedFiltersMixin
 from django.conf import settings
 from django.conf.urls import url
 from django.contrib import admin
 from django.core.management import call_command
 from django.db import models
+from django.db.models import Count
+from django.db.models.functions import TruncDay
+from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.utils.html import format_html
 from django_otp.admin import OTPAdminSite
 
+from book.models import Article
 from book.models import Author
-from book.models import BestSeller
 from book.models import Book
-from book.models import BookProxy
-from advanced_filters.admin import AdminAdvancedFiltersMixin
-
+from book.models import BorrowedBook
+from book.models import BorrowedBookDashboard
 
 try:
     from django.urls import reverse
@@ -69,12 +72,14 @@ def make_books_unavailable(modeladmin, request, queryset):
 
 class BookAdmin(admin.ModelAdmin):
     # list_editable = ('author', 'name', 'is_available')
+    # change_list_template = 'admin/book/book_changelist.html'
+    change_list_template = 'book/admin/book_changelist.html'
 
     search_fields = ('name',)
     # autocomplete_fields = ['author']
     actions = ('make_books_available',)
 
-    list_display = ('name', 'author', 'delete', )
+    list_display = ('name', 'author', 'delete',)
     list_display = (
         'name', 'author', 'is_available', 'delete', 'borrowed', 'is_available', 'toggle_availability', 'author_link')
     list_display = (
@@ -131,6 +136,17 @@ class BookAdmin(admin.ModelAdmin):
         book.is_available = True
         book.save()
         return redirect(reverse("admin:book_book_changelist"))
+
+    def changelist_view(self, request, extra_context=None):
+        data = Book.objects.annotate(date=TruncDay("updated_at")).values("date").annotate(
+            count=Count("id")).values_list('date', 'count').order_by('-date')
+        chart_data = {str(k.date()): v for k, v in dict(data).items()}
+        del chart_data['2019-12-15']
+        extra_context = extra_context or {
+            'chart_labels': list(chart_data.keys()),
+            'chart_data': list(chart_data.values()),
+        }
+        return super().changelist_view(request, extra_context=extra_context)
 
 
 class BookAdmin2(admin.ModelAdmin):
@@ -260,7 +276,7 @@ class AuthorAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'active', 'active', 'active', 'name', 'name')
 
 
-admin.site.register(Author, AuthorAdmin)
+# admin.site.register(Author, AuthorAdmin)
 
 
 # admin.site.register(Author)
@@ -353,11 +369,28 @@ class RelatedFieldAdmin(admin.ModelAdmin):
 
 
 class BestSellerAdmin(RelatedFieldAdmin):
-    list_display = ('book', 'book__author', 'book__author__name')
-    autocomplete_fields = ['book']
+    change_form_template = 'bestseller_changeform.html'
 
+    # list_display = ('id', 'book', 'book__author', 'book__author__name', 'year', 'rank')
+    list_display = ('id', 'book', 'year', 'rank')
+
+    # list_display = ('book',)
     # list_display = ('book', 'book__author')
+
+    # list_editable = ('book', 'year', 'rank')
+
+    # exclude = ('year', 'rank')
+
+    # autocomplete_fields = ['book']
+
     # book_author = get_related_field('book__author')
+
+    def response_change(self, request, obj):
+        if "notify-author" in request.POST:
+            # send_best_seller_email(obj)
+            self.message_user(request, "Notified author about the the best seller")
+            return HttpResponseRedirect(request.path_info)
+        return super().response_change(request, obj)
 
 
 class BookProxyAdmin(admin.ModelAdmin):
@@ -365,21 +398,133 @@ class BookProxyAdmin(admin.ModelAdmin):
 
 
 class BookAdAdminFilter(AdminAdvancedFiltersMixin, admin.ModelAdmin):
-    search_fields = ('name', )
+    # search_fields = ('name',)
     list_display = ('id', 'name', 'author', 'published_date', 'is_available', 'name', 'author',)
     advanced_filter_fields = ('name', 'published_date', 'author', 'is_available')
-    date_hierarchy = 'published_date'
+    # date_hierarchy = 'published_date'
 
+
+class BookInline(admin.StackedInline):
+    model = Book
+    extra = 0
+
+
+class ArticleInline(admin.StackedInline):
+    model = Article
+    extra = 0
+
+
+class AuthorInlineAdmin(admin.ModelAdmin):
+    # def get_readonly_fields(self, request, obj=None):
+    #     return ('id', 'name')
+
+    list_display = ('id', 'name',)
+    inlines = [
+        BookInline, ArticleInline,
+    ]
+
+    # fieldsets = (
+    #     (None,
+    #      {'fields': ('name',)}),
+    #     # ('Inlines')
+    #     # ArticleInline,
+    #     ('Inlines',
+    #      {'fields': ('id',)}),
+    # )
+
+
+from django import forms
+
+print('aaa')
+
+
+class AuthorModelForm(forms.ModelForm):
+    book = forms.CharField()
+
+    def save(self, commit=True):
+        book = self.cleaned_data.get('book', None)
+        return super(AuthorModelForm, self).save(commit=commit)
+
+    class Meta:
+        model = Author
+        fields = '__all__'
+
+
+class BookInLine(admin.TabularInline):
+    model = Book
+    can_delete = False
+    min_num = 0
+    extra = 0
+
+
+@admin.register(Author)
+class AuthorAdmin(admin.ModelAdmin):
+    inlines = [BookInLine]
+
+    form = AuthorModelForm
+
+
+class BorrowedBookAdmin(admin.ModelAdmin):
+    list_display = ('book', 'user', 'borrowed_date')
+    change_list_template = 'book/admin/borrowedbook_changelist.html'
+
+    def changelist_view(self, request, extra_context=None):
+        qs = BorrowedBook.objects.annotate(date=TruncDay("updated_at")).values("date").annotate(
+            count=Count("id")).values_list('date', 'count').order_by('-date')
+        qs = qs.extra(select={'datestr': "to_char(date, 'YYYY-MM-DD')"})
+        print(qs)
+        extra_context = extra_context or {
+            'chart_labels': list(chart_data.keys()),
+            'chart_data': list(chart_data.values()),
+        }
+        return super().changelist_view(request, extra_context=extra_context)
+
+
+class BorrowedBookDashboardAdmin(admin.ModelAdmin):
+    list_display = ('book', 'user', 'borrowed_date')
+
+
+# class UserProxy(User):
+#     class Meta:
+#         verbose_name = 'Staff'
+#         verbose_name_plural = 'Staffs'
+#         proxy = True
+
+
+# class StaffAdmin(UserAdmin):
+#     def get_queryset(self, request):
+#         qs = super(StaffAdmin, self).get_queryset(request)
+#         return qs.filter(is_staff=True)
+
+#     exclude = ('first_name', 'last_name',)
+
+#     def save_model(self, request, obj, form, change):
+#         if request.user.is_superuser:
+#             obj.is_staff = True
+#             obj.save()
+
+
+# admin.site.register(UserProxy, StaffAdmin)
+
+# admin_site.register(Author, AuthorInlineAdmin)
+# admin.site.register(Author, AuthorInlineAdmin)
 
 # admin_site.register(BestSeller, BestSellerAdmin)
-admin_site.register(BestSeller)
-admin_site.register(BookProxy, BookProxyAdmin)
+# admin_site.register(BestSeller)
 
+# admin_site.register(BookProxy, BookProxyAdmin)
 # admin.site.register(Book)
-# admin.site.register(Book, BookAdmin)
+admin.site.register(Book, BookAdmin)
 # admin.site.register(Book, BookAdmin2)
 # admin.site.register(Book, BookAdminFilter)
-admin.site.register(Book, BookAdAdminFilter)
+# admin.site.register(Book, BookAdAdminFilter)
+# admin.site.register(Book, BookAdminMulti)
+
+
+admin.site.register(BorrowedBook, BorrowedBookAdmin)
+admin.site.register(BorrowedBookDashboard, BorrowedBookDashboardAdmin)
 
 # admin.site.register(BestSeller)
-admin.site.register(BestSeller, BestSellerAdmin)
+# admin.site.register(BestSeller, BestSellerAdmin)
+
+print('book admin')

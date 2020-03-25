@@ -16,26 +16,27 @@ ALLOWED_HOSTS = ['0.0.0.0', 'localhost', '127.0.0.1', '*']
 
 
 DEVELOPMENT_APPS = (
-    'advanced_filters',
-    'autofixture',
+    # 'autofixture',
     'debug_toolbar',
     # 'silk',
     # 'speedinfo',
     # 'django_json_widget',
     # 'xadmin',
     # 'djadmin2',
-    # 'django_otp',
-    # 'django_otp.plugins.otp_totp',
+    'django_otp',
+    'django_otp.plugins.otp_totp',
+    # 'django_otp.plugins.otp_static',
+    # 'two_factor',
     # 'elasticapm.contrib.django',
 )
 
-INSTALLED_APPS += DEVELOPMENT_APPS
 
+INSTALLED_APPS += DEVELOPMENT_APPS
+print(INSTALLED_APPS)
 
 MIDDLEWARE_CLASSES = (
     'django_pdb.middleware.PdbMiddleware',
 )
-
 
 DEV_MIDDLEWARE = [
     'debug_toolbar.middleware.DebugToolbarMiddleware',
@@ -43,7 +44,6 @@ DEV_MIDDLEWARE = [
     'django.middleware.cache.FetchFromCacheMiddleware',
     # 'querycount.middleware.QueryCountMiddleware',
     # 'django_pdb.middleware.PdbMiddleware',
-    # 'django_otp.middleware.OTPMiddleware',
 ]
 
 SILK_ENABLED = 'silk' in INSTALLED_APPS
@@ -135,12 +135,12 @@ except:
 #     logger.exception("Bad math.")
 
 
-DATABASES = {
-    'default': dj_database_url.config(
-        default=os.getenv('DATABASE_URL'),
-        conn_max_age=int(os.getenv('POSTGRES_CONN_MAX_AGE', 600)),
-    )
-}
+# DATABASES = {
+#     'default': dj_database_url.config(
+#         default=os.getenv('DATABASE_URL'),
+#         conn_max_age=int(os.getenv('POSTGRES_CONN_MAX_AGE', 600)),
+#     )
+# }
 
 CACHES = {
     'default': {
@@ -187,7 +187,7 @@ fv2 = Func(Max('total_time'), function='', template=template)
 #     )
 # )
 pprint(DATABASES["default"])
-pprint(DATABASES)
+# pprint(DATABASES)
 
 # ELASTIC_APM = {
 #     'SERVICE_NAME': 'library',
@@ -200,9 +200,18 @@ SILKY_PYTHON_PROFILER_BINARY = True
 SILKY_PYTHON_PROFILER_RESULT_PATH = '/tmp/'
 print(DEBUG)
 
-# INSTALLED_APPS += ('controlcenter',)
-# CONTROLCENTER_DASHBOARDS = (
-#     ('bookdash', 'book.dashboard.BookDashboard'),
-# )
+INSTALLED_APPS += ('controlcenter',)
+CONTROLCENTER_DASHBOARDS = (
+    ('bookdash', 'book.dashboard.BookDashboard'),
+)
 
-INSTALLED_APPS += ('admin_honeypot',)
+# INSTALLED_APPS += ('admin_honeypot',)
+
+OTP_TOTP_ISSUER = 'Library Inc.'
+
+# INSTALLED_APPS += ('jet_django',)
+# JET_PROJECT = 'library'
+# JET_TOKEN = os.environ.get('JET_TOKEN')
+
+INSTALLED_APPS += ('advanced_filters',)
+# pprint(INSTALLED_APPS)

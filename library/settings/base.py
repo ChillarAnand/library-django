@@ -1,5 +1,5 @@
 import os
-
+from pprint import pprint
 
 env = os.environ.get
 
@@ -13,9 +13,11 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['0.0.0.0', '.heroku.com', ]
 
-
-INSTALLED_APPS = [
+INSTALLED_APPS = (
+    # 'object_tools',
+    # 'admin_menu',
     'django.contrib.admin',
+    # 'library.apps.LibraryAdminConfig',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -36,10 +38,15 @@ INSTALLED_APPS = [
     'crm',
     'chat',
     'trash',
-]
+)
+
+# ADMIN_STYLE = {
+#     'primary-color': '#417690',
+#     'secondary-color': '#79aec8',
+#     'tertiary-color': '#c4dce8'
+# }
 
 SITE_ID = 1
-
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -47,6 +54,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django_otp.middleware.OTPMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -56,7 +64,7 @@ ROOT_URLCONF = 'library.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates'), ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -69,8 +77,9 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'library.wsgi.application'
+pprint(TEMPLATES)
 
+WSGI_APPLICATION = 'library.wsgi.application'
 
 DATABASES = {
     'default': {
