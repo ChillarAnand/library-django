@@ -468,7 +468,7 @@ class BorrowedBookAdmin(admin.ModelAdmin):
     list_display = ('book', 'user', 'borrowed_date')
     change_list_template = 'book/admin/borrowedbook_changelist.html'
 
-    def changelist_view(self, request, extra_context=None):
+    def changelist_view2(self, request, extra_context=None):
         qs = BorrowedBook.objects.annotate(date=TruncDay("updated_at")).values("date").annotate(
             count=Count("id")).values_list('date', 'count').order_by('-date')
         qs = qs.extra(select={'datestr': "to_char(date, 'YYYY-MM-DD')"})
@@ -481,7 +481,20 @@ class BorrowedBookAdmin(admin.ModelAdmin):
 
 
 class BorrowedBookDashboardAdmin(admin.ModelAdmin):
-    list_display = ('book', 'user', 'borrowed_date')
+
+    def changelist_view(self, request, extra_context=None):
+        # qs = BorrowedBook.objects.annotate(date=TruncDay("updated_at")).values("date").annotate(
+        #     count=Count("id")).values_list('date', 'count').order_by('-date')
+        qs = BorrowedBook.objects.values("borrowed_date").annotate(
+            count=Count("id")).values_list('date', 'count').order_by('-date')
+        # qs = qs.extra(select={'datestr': "to_char(date, 'YYYY-MM-DD')"})
+        print(qs)
+        extra_context = extra_context or {
+            'chart_labels': list(chart_data.keys()),
+            'chart_data': list(chart_data.values()),
+            'data': chart_data,
+        }
+        return super().changelist_view(request, extra_context=extra_context)
 
 
 # class UserProxy(User):

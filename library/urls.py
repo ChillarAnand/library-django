@@ -1,5 +1,5 @@
 import debug_toolbar
-import object_tools
+# import object_tools
 from controlcenter.views import controlcenter
 from django.conf import settings
 from django.conf.urls import include
@@ -28,9 +28,9 @@ from library.admin import LibraryOTPAdminSite
 ladmin = LibraryOTPAdminSite()
 
 urlpatterns = [
-    path('jet_api/', include('jet_django.urls')),
+    # path('jet_api/', include('jet_django.urls')),
 
-    url(r'^object-tools/', object_tools.tools.urls),
+    # url(r'^object-tools/', object_tools.tools.urls),
     url(r'^$', generic.RedirectView.as_view(url='/admin/', permanent=True), name='index'),
     # url(r'^advanced_filters/', include('advanced_filters.urls')),
     url(r'^admin/', admin.site.urls),

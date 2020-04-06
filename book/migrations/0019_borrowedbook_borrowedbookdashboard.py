@@ -29,7 +29,7 @@ class Migration(migrations.Migration):
             options={
                 'proxy': True,
                 'indexes': [],
-                'constraints': [],
+                # 'constraints': [],
             },
             bases=('book.borrowedbook',),
         ),

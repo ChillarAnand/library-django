@@ -200,10 +200,10 @@ SILKY_PYTHON_PROFILER_BINARY = True
 SILKY_PYTHON_PROFILER_RESULT_PATH = '/tmp/'
 print(DEBUG)
 
-INSTALLED_APPS += ('controlcenter',)
-CONTROLCENTER_DASHBOARDS = (
-    ('bookdash', 'book.dashboard.BookDashboard'),
-)
+# INSTALLED_APPS += ('controlcenter',)
+# CONTROLCENTER_DASHBOARDS = (
+#     ('bookdash', 'book.dashboard.BookDashboard'),
+# )
 
 # INSTALLED_APPS += ('admin_honeypot',)
 
