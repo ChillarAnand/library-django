@@ -466,7 +466,6 @@ class AuthorAdmin(admin.ModelAdmin):
 
 class BorrowedBookAdmin(admin.ModelAdmin):
     list_display = ('book', 'user', 'borrowed_date')
-    change_list_template = 'book/admin/borrowedbook_changelist.html'
 
     def changelist_view2(self, request, extra_context=None):
         qs = BorrowedBook.objects.annotate(date=TruncDay("updated_at")).values("date").annotate(
@@ -481,14 +480,18 @@ class BorrowedBookAdmin(admin.ModelAdmin):
 
 
 class BorrowedBookDashboardAdmin(admin.ModelAdmin):
+    change_list_template = 'book/admin/borrowedbook_changelist.html'
 
     def changelist_view(self, request, extra_context=None):
         # qs = BorrowedBook.objects.annotate(date=TruncDay("updated_at")).values("date").annotate(
         #     count=Count("id")).values_list('date', 'count').order_by('-date')
         qs = BorrowedBook.objects.values("borrowed_date").annotate(
-            count=Count("id")).values_list('date', 'count').order_by('-date')
-        # qs = qs.extra(select={'datestr': "to_char(date, 'YYYY-MM-DD')"})
-        print(qs)
+            count=Count("id")).values_list('borrowed_date', 'count').order_by('-borrowed_date')
+        qs = qs.extra(select={'datestr': "DATE_FORMAT(borrowed_date, 'YYYY-MM-DD')"})
+        # chart_data = dict(qs)
+        chart_data = dict(qs.values_list('borrowed_date','count'))
+        print(chart_data)
+
         extra_context = extra_context or {
             'chart_labels': list(chart_data.keys()),
             'chart_data': list(chart_data.values()),
