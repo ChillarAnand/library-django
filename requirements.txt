@@ -29,3 +29,6 @@ django-speedinfo==1.4.0
 django_json_widget
 django_otp
 django-admin-honeypot
+
+django-advanced-filters==1.1.1
+django-controlcenter==0.3.0
