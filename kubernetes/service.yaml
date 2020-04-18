@@ -1,0 +1,18 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: library-django
+spec:
+  type: LoadBalancer
+  selector:
+    app: library-django
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8000
+      protocol: TCP
+    - name: https
+      port: 443
+      targetPort: 8000
+      protocol: TCP

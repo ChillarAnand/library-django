@@ -5,4 +5,4 @@ metadata:
 deploy:
   kubectl:
     manifests:
-    - kubernetes/deployment.yaml
+    - kubernetes/
