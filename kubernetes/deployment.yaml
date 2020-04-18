@@ -1,0 +1,26 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: library-django
+spec:
+  selector:
+    matchLabels:
+      app: library-django
+  replicas: 1
+  minReadySeconds: 5
+  template:
+    metadata:
+      labels:
+        app: library-django
+    spec:
+      nodeSelector:
+        "beta.kubernetes.io/os": linux
+      containers:
+      - name: library-django
+        image: localhost:5000/library:latest
+        ports:
+        - containerPort: 8000
+        args:
+        - gunicorn
+        - library.wsgi
