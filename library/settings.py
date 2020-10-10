@@ -90,37 +90,9 @@ pprint(TEMPLATES)
 WSGI_APPLICATION = 'library.wsgi.application'
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
+    'default': dj_database_url.config()
 }
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'library',
-        'USER': 'fj',
-        'PASSWORD': 'fjghfjgh',
-        'HOST': '127.0.0.1',
-        'PORT': 5432,
-    },
-    # 'legacy_db': {
-    #     'ENGINE': 'django.db.backends.postgresql_psycopg2',
-    #     'NAME': 'test',
-    #     'USER': 'user',
-    #     'PASSWORD': 'password',
-    #     'HOST': '127.0.0.1',
-    #     'PORT': 5432,
-    # }
-}
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-}
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -159,32 +131,6 @@ STATIC_ROOT = 'static'
 MEDIA_ROOT = BASE_DIR
 MEDIA_URL = '/media/'
 
-from celery import Celery
-broker = 'memory://'
-broker = 'amqp://guest:guest@localhost//'
-
-app = Celery(broker=broker)
-
-app.conf.update({
-    'CELERYD_LOG_COLOR': False,
-})
-
-
-
-@app.task
-def add(x, y):
-    return x + y
-
-
-@app.task
-def dummy():
-    pass
-
-
-# @app.on_after_configure.connect
-# def setup_periodic_tasks(sender, **kwargs):
-#     sender.add_periodic_task(10, my_task.s(66))
-
 
 ASGI_APPLICATION = "library.routing.application"
 
@@ -206,8 +152,7 @@ SECRET_KEY = 'q6emagfzaeftr*4$o@@608v3!)(^cmvwm@2kcatu7if(c#0w+@'
 
 DEBUG = True
 
-ALLOWED_HOSTS = ['0.0.0.0', 'localhost', '127.0.0.1', '*']
-# ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['*']
 
 
 DEVELOPMENT_APPS = (
@@ -324,18 +269,6 @@ try:
 except:
     pass
 
-# try:
-#     1/0
-# except Exception:
-#     logger.exception("Bad math.")
-
-
-# DATABASES = {
-#     'default': dj_database_url.config(
-#         default=os.getenv('DATABASE_URL'),
-#         conn_max_age=int(os.getenv('POSTGRES_CONN_MAX_AGE', 600)),
-#     )
-# }
 
 CACHES = {
     'default': {
@@ -346,7 +279,6 @@ CACHES = {
 }
 
 print('dev')
-# print(DATABASES["default"]["NAME"])
 
 import decimal
 # from speedinfo.settings import ReportColumnFormat, DEFAULTS
@@ -381,8 +313,6 @@ fv2 = Func(Max('total_time'), function='', template=template)
 #         )
 #     )
 # )
-pprint(DATABASES["default"])
-# pprint(DATABASES)
 
 # ELASTIC_APM = {
 #     'SERVICE_NAME': 'library',

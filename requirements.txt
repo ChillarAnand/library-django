@@ -1,6 +1,4 @@
 airbrake==2.1.0
-boto3
-celery
 dj-database-url
 django==2.0.4
 django-advanced-filters
@@ -18,7 +16,6 @@ django-speedinfo
 djangorestframework
 drf-generators
 gunicorn
-psycopg2
 psycopg2-binary
 service-identity==17.0.0
 werkzeug
