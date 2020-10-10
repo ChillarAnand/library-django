@@ -141,7 +141,7 @@ class BookAdmin(admin.ModelAdmin):
         data = Book.objects.annotate(date=TruncDay("updated_at")).values("date").annotate(
             count=Count("id")).values_list('date', 'count').order_by('-date')
         chart_data = {str(k.date()): v for k, v in dict(data).items()}
-        del chart_data['2019-12-15']
+        # del chart_data['2019-12-15']
         extra_context = extra_context or {
             'chart_labels': list(chart_data.keys()),
             'chart_data': list(chart_data.values()),
@@ -529,8 +529,8 @@ class BorrowedBookDashboardAdmin(admin.ModelAdmin):
 # admin_site.register(BestSeller)
 
 # admin_site.register(BookProxy, BookProxyAdmin)
-# admin.site.register(Book)
-admin.site.register(Book, BookAdmin)
+admin.site.register(Book)
+# admin.site.register(Book, BookAdmin)
 # admin.site.register(Book, BookAdmin2)
 # admin.site.register(Book, BookAdminFilter)
 # admin.site.register(Book, BookAdAdminFilter)
@@ -542,5 +542,3 @@ admin.site.register(BorrowedBookDashboard, BorrowedBookDashboardAdmin)
 
 # admin.site.register(BestSeller)
 # admin.site.register(BestSeller, BestSellerAdmin)
-
-print('book admin')

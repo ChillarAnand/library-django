@@ -17,7 +17,7 @@ print(BASE_DIR)
 
 SECRET_KEY = 'q6emagfzaeftr*4$o@@608v3!)(^cmvwm@2kcatu7if(c#0w+@'
 
-DEBUG = True
+DEBUG = bool(os.environ.get('DEBUG', 'True'))
 
 ALLOWED_HOSTS = ['0.0.0.0', '.heroku.com', ]
 
@@ -58,6 +58,7 @@ SITE_ID = 1
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -65,6 +66,12 @@ MIDDLEWARE = [
     'django_otp.middleware.OTPMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
+    # 'speedinfo.middleware.ProfilerMiddleware',
+    'django.middleware.cache.FetchFromCacheMiddleware',
+    # 'silk.middleware.SilkyMiddleware',
+    # 'querycount.middleware.QueryCountMiddleware',
+    # 'django_pdb.middleware.PdbMiddleware',
 ]
 
 ROOT_URLCONF = 'library.urls'
@@ -85,7 +92,6 @@ TEMPLATES = [
     },
 ]
 
-pprint(TEMPLATES)
 
 WSGI_APPLICATION = 'library.wsgi.application'
 
@@ -148,17 +154,14 @@ TEST = True
 CELERY_RESULT_BACKEND = 'django-db'
 
 
-SECRET_KEY = 'q6emagfzaeftr*4$o@@608v3!)(^cmvwm@2kcatu7if(c#0w+@'
-
-DEBUG = True
-
+SECRET_KEY = os.environ.get('SECRET_KEY', 'dummy')
 ALLOWED_HOSTS = ['*']
 
 
 DEVELOPMENT_APPS = (
     # 'autofixture',
     'debug_toolbar',
-    # 'silk',
+    'silk',
     # 'speedinfo',
     # 'django_json_widget',
     # 'xadmin',
@@ -172,30 +175,6 @@ DEVELOPMENT_APPS = (
 
 
 INSTALLED_APPS += DEVELOPMENT_APPS
-print(INSTALLED_APPS)
-
-MIDDLEWARE_CLASSES = (
-    'django_pdb.middleware.PdbMiddleware',
-)
-
-DEV_MIDDLEWARE = [
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
-    'speedinfo.middleware.ProfilerMiddleware',
-    'django.middleware.cache.FetchFromCacheMiddleware',
-    # 'querycount.middleware.QueryCountMiddleware',
-    # 'django_pdb.middleware.PdbMiddleware',
-]
-
-SILK_ENABLED = 'silk' in INSTALLED_APPS
-
-if SILK_ENABLED:
-    DEV_MIDDLEWARE.append(
-        'silk.middleware.SilkyMiddleware',
-    )
-
-# MIDDLEWARE = MIDDLEWARE + DEV_MIDDLEWARE
-MIDDLEWARE = DEV_MIDDLEWARE + MIDDLEWARE
-
 INTERNAL_IPS = ALLOWED_HOSTS
 
 
@@ -340,3 +319,17 @@ OTP_TOTP_ISSUER = 'Library Inc.'
 
 INSTALLED_APPS += ('advanced_filters',)
 # pprint(INSTALLED_APPS)
+
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
+
+SENTRY_DSN = os.environ.get('SENTRY_DSN')
+VERSION = os.environ.get('VERSION')
+if SENTRY_DSN:
+    sentry_sdk.init(
+        dsn=SENTRY_DSN,
+        integrations=[DjangoIntegration()],
+        traces_sample_rate=1.0,
+        send_default_pii=True,
+        release=VERSION,
+    )
