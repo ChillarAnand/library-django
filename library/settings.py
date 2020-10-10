@@ -149,10 +149,7 @@ TEST = True
 CELERY_RESULT_BACKEND = 'django-db'
 
 
-SECRET_KEY = 'q6emagfzaeftr*4$o@@608v3!)(^cmvwm@2kcatu7if(c#0w+@'
-
-DEBUG = True
-
+SECRET_KEY = os.environ.get('SECRET_KEY', 'dummy')
 ALLOWED_HOSTS = ['*']
 
 
