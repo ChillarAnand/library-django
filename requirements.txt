@@ -19,3 +19,4 @@ gunicorn
 psycopg2-binary
 service-identity==17.0.0
 werkzeug
+whitenoise==5.2.0
