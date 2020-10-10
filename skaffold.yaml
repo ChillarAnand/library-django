@@ -2,7 +2,11 @@ apiVersion: skaffold/v2beta1
 kind: Config
 metadata:
   name: library
+build:
+  artifacts:
+  - image: docker.io/chillaranand/library
 deploy:
   kubectl:
     manifests:
-    - kubernetes/
+    - kubernetes/deployment.yaml
+    - kubernetes/service.yaml
