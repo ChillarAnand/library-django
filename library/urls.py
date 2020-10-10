@@ -27,7 +27,13 @@ from library.admin import LibraryOTPAdminSite
 
 ladmin = LibraryOTPAdminSite()
 
+def trigger_error(request):
+    division_by_zero = 1 / 0
+    return division_by_zero
+
+
 urlpatterns = [
+    path('sentry/', trigger_error),
     # path('jet_api/', include('jet_django.urls')),
 
     # url(r'^object-tools/', object_tools.tools.urls),
