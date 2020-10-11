@@ -34,6 +34,7 @@ def trigger_error(request):
 
 urlpatterns = [
     path('sentry/', trigger_error),
+    path('sentry2/', trigger_error),
     # path('jet_api/', include('jet_django.urls')),
 
     # url(r'^object-tools/', object_tools.tools.urls),
