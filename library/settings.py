@@ -156,7 +156,7 @@ ALLOWED_HOSTS = ['*']
 DEVELOPMENT_APPS = (
     # 'autofixture',
     'debug_toolbar',
-    # 'silk',
+    'silk',
     # 'speedinfo',
     # 'django_json_widget',
     # 'xadmin',
