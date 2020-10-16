@@ -41,7 +41,7 @@ urlpatterns = [
     # path('jet_api/', include('jet_django.urls')),
 
     # url(r'^object-tools/', object_tools.tools.urls),
-    url(r'^$', generic.RedirectView.as_view(url='/admin/', permanent=True), name='index'),
+    # url(r'^$', generic.RedirectView.as_view(url='/admin/', permanent=True), name='index'),
     # url(r'^advanced_filters/', include('advanced_filters.urls')),
     url(r'^admin/', admin.site.urls),
     url(r'^ladmin/', ladmin.urls),
