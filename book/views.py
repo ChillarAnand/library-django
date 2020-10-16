@@ -7,6 +7,7 @@ from django.http.response import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render
 from django.urls import reverse
+from django.utils.timezone import now
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
 
@@ -160,3 +161,23 @@ def book_form(request):
 
     # book = Book.objects.create()
     return HttpResponseRedirect(reverse('hello'))
+
+def black_hole(request, *args, **kwargs):
+    path = request.path
+    start = now()
+    try:
+        params = request.GET
+        delay = request.GET.get('delay')
+        if delay:
+            time.sleep(int(delay))
+    except:
+        pass
+
+    end = now()
+    delta = end-start
+    data = {
+        'path': path,
+        'params': params,
+        'duration': delta.seconds,
+    }
+    return JsonResponse(data)

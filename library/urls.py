@@ -7,6 +7,7 @@ from django.conf.urls import url
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path
+from django.urls import re_path
 from django.views import generic
 
 from book import views as bviews
@@ -27,12 +28,14 @@ from library.admin import LibraryOTPAdminSite
 
 ladmin = LibraryOTPAdminSite()
 
+
 def trigger_error(request):
     division_by_zero = 1 / 0
     return division_by_zero
 
 
 urlpatterns = [
+    path('sentry', trigger_error),
     path('sentry/', trigger_error),
     path('sentry2/', trigger_error),
     # path('jet_api/', include('jet_django.urls')),
@@ -58,13 +61,15 @@ urlpatterns = [
 
     # url(r'jet_api/', include('jet_django.urls')),
     url(r'^admin/dashboard/', controlcenter.urls),
+
+    url(r'^silk/', include('silk.urls', namespace='silk')),
+
+    path('^.*', bviews.black_hole),
+    path('^.*/', bviews.black_hole),
+    re_path(r'^(?P<path>.*)/$', bviews.black_hole),
+    path('', bviews.black_hole),
 ]
 
 if settings.DEBUG:
     urlpatterns += [url(r'^__debug__/', include(debug_toolbar.urls))]
-    if settings.SILK_ENABLED:
-        urlpatterns += [url(r'^silk/', include('silk.urls', namespace='silk'))]
-
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
-    pass
