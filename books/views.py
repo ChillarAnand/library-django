@@ -196,7 +196,7 @@ def home(request):
         'urls': {
             'error': '/error',
             'admin': '/admin',
-            'slow': '/books/books/delay=4',
+            'slow': '/books/books/?delay=4',
         }
     }
     return render(request, template_name='home.html', context=context)
