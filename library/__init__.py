@@ -1,3 +1,3 @@
 from library.checks import *  # noqa
 
-VERSION = '1.1.4'
+VERSION = '1.1.5'
