@@ -4,7 +4,7 @@ from django.contrib import admin
 class DynamicLookupMixin(object):
     '''
     a mixin to add dynamic callable attributes like 'book__author' which
-    return a function that return the instance.book.author value
+    return a function that return the instance.books.author value
     '''
 
     def __getattr__(self, attr):

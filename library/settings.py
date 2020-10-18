@@ -12,8 +12,9 @@ from django.db.models.functions import Cast
 env = os.environ.get
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-print(BASE_DIR)
+
 
 SECRET_KEY = 'q6emagfzaeftr*4$o@@608v3!)(^cmvwm@2kcatu7if(c#0w+@'
 
@@ -42,7 +43,7 @@ INSTALLED_APPS = (
     # 'django_celery_results',
 
     # our apps
-    'book',
+    'books',
     'crm',
     'chat',
     'trash',
@@ -79,7 +80,7 @@ ROOT_URLCONF = 'library.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates'), ],
+        'DIRS': [os.path.join(ROOT_DIR, 'templates'), ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -306,7 +307,7 @@ print(DEBUG)
 
 # INSTALLED_APPS += ('controlcenter',)
 # CONTROLCENTER_DASHBOARDS = (
-#     ('bookdash', 'book.dashboard.BookDashboard'),
+#     ('bookdash', 'books.dashboard.BookDashboard'),
 # )
 
 # INSTALLED_APPS += ('admin_honeypot',)

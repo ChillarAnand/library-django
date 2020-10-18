@@ -1,16 +1,12 @@
 import debug_toolbar
-# import object_tools
-from controlcenter.views import controlcenter
 from django.conf import settings
 from django.conf.urls import include
 from django.conf.urls import url
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path
-from django.urls import re_path
-from django.views import generic
 
-from book import views as bviews
+from books import views as bviews
 
 admin.site.site_header = "library admin"
 admin.site.site_title = "library admin portal"
@@ -35,11 +31,13 @@ def trigger_error(request):
 
 
 urlpatterns = [
+    url(r'^$', bviews.home, name='home'),
+
     path('error', trigger_error),
 
     url(r'^admin/', admin.site.urls),
 
-    url(r'^books/', include('book.urls')),
+    url(r'^books/', include('books.urls')),
 
     # path('jet_api/', include('jet_django.urls')),
     # url(r'^object-tools/', object_tools.tools.urls),
@@ -50,7 +48,7 @@ urlpatterns = [
     # url(r'^sadmin/', admin_site.urls),
     # url(r'^chat/', include('chat.urls')),
 
-    url(r'^email-book/$', bviews.email_book, name='email-book', ),
+    url(r'^email-books/$', bviews.email_book, name='email-books', ),
 
     url(r'^silk/', include('silk.urls', namespace='silk')),
 

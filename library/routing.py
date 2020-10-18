@@ -12,6 +12,6 @@ application = ProtocolTypeRouter({
         )
     ),
     'chanel': ChannelNameRouter({
-        'email-book': consumers.EmailBook,
+        'email-books': consumers.EmailBook,
     }),
 })

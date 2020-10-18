@@ -40,7 +40,7 @@ class Migration(migrations.Migration):
                 ('active', models.BooleanField(blank=True, null=True)),
             ],
             options={
-                'db_table': 'book',
+                'db_table': 'books',
                 'managed': False,
             },
         ),
