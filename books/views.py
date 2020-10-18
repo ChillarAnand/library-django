@@ -197,6 +197,7 @@ def home(request):
             'error': '/error',
             'admin': '/admin',
             'slow': '/books/books/?delay=4',
+            'books_list': '/books/books/',
         }
     }
     return render(request, template_name='home.html', context=context)
