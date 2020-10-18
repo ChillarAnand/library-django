@@ -78,7 +78,13 @@ class BookViewSet(ViewSet):
         # Book.objects.select_for_update().first()
         # return_value = BookViewSet.get_books()
 
-        print(return_value)
+        try:
+            params = request.GET
+            delay = request.GET.get('delay')
+            if delay:
+                time.sleep(int(delay))
+        except:
+            pass
         return Response(return_value)
 
     def create(self, request):
