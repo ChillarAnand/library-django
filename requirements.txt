@@ -1,6 +1,6 @@
 airbrake==2.1.0
 dj-database-url
-django==2.2.13
+django==2.2.20
 django-advanced-filters
 django-autofixture
 django-celery-results
